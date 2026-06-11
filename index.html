@@ -3,523 +3,468 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Readiness Self-Assessment</title>
+<title>AI Readiness Self-Assessment | UBT</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --navy: #1a2744; --navy-light: #243352; --teal: #00b4d8; --teal-dark: #0096b7;
-    --teal-glow: rgba(0, 180, 216, 0.15); --bg: #f0f4f8; --white: #ffffff;
-    --grey-100: #f7f9fc; --grey-200: #e8edf4; --grey-300: #d1d9e6;
-    --grey-500: #8896a7; --grey-700: #4a5568;
-    --stage1: #ef4444; --stage2: #f59e0b; --stage3: #eab308; --stage4: #22c55e; --stage5: #00b4d8;
-    --shadow: 0 4px 24px rgba(26, 39, 68, 0.08); --radius: 14px;
-  }
-  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--navy); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-  .header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: var(--white); padding: 60px 40px 50px; text-align: center; position: relative; overflow: hidden; }
-  .header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%); border-radius: 50%; }
-  .header::after { content: ''; position: absolute; bottom: -30%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,180,216,0.08) 0%, transparent 70%); border-radius: 50%; }
-  .header h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; }
-  .header h1 span { color: var(--teal); }
-  .header p { font-size: 1.1rem; font-weight: 300; opacity: 0.85; position: relative; z-index: 1; }
-  .container { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; margin-right: 340px; }
-  .intro { background: var(--white); border-radius: var(--radius); padding: 28px 32px; box-shadow: var(--shadow); margin-bottom: 36px; border-left: 4px solid var(--teal); }
-  .intro p { font-size: 0.97rem; color: var(--grey-700); line-height: 1.7; }
-
-  /* CUSTOMER INFO */
-  .info-card { background: var(--white); border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow); margin-bottom: 28px; }
-  .info-card .info-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-  .info-card .info-header .info-icon { font-size: 1.4rem; }
-  .info-card .info-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--navy); }
-  .info-card .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .info-card .info-grid .full-width { grid-column: 1 / -1; }
-  .info-card label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-  .info-card input { width: 100%; padding: 12px 16px; border: 2px solid var(--grey-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--navy); transition: all 0.25s ease; background: var(--white); }
-  .info-card input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,180,216,0.12); }
-  .info-card input::placeholder { color: var(--grey-300); }
-
-  /* QUESTION CARDS */
-  .question-card { background: var(--white); border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow); margin-bottom: 28px; }
-  .question-card .q-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
-  .question-card .q-number { background: var(--navy); color: var(--white); font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
-  .question-card .q-category { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--teal-dark); }
-  .question-card .q-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; margin-top: 10px; color: var(--navy); }
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .option { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 2px solid var(--grey-200); border-radius: 10px; cursor: pointer; transition: all 0.25s ease; background: var(--white); }
-  .option:hover { border-color: var(--teal); background: var(--teal-glow); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,180,216,0.1); }
-  .option.selected { border-color: var(--teal); background: var(--teal-glow); box-shadow: 0 0 0 3px rgba(0,180,216,0.15); }
-  .option .score-badge { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--grey-200); color: var(--navy); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; transition: all 0.25s ease; }
-  .option.selected .score-badge { background: var(--teal); color: var(--white); }
-  .option .option-text { font-size: 0.92rem; color: var(--grey-700); flex: 1; line-height: 1.5; }
-  .option.selected .option-text { color: var(--navy); font-weight: 500; }
-  .option .tick { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--grey-300); display: flex; align-items: center; justify-content: center; transition: all 0.25s ease; }
-  .option.selected .tick { background: var(--teal); border-color: var(--teal); }
-  .option .tick svg { opacity: 0; transition: opacity 0.2s ease; }
-  .option.selected .tick svg { opacity: 1; }
-
-  /* TRACKER */
-  .tracker { position: fixed; top: 50%; right: 28px; transform: translateY(-50%); width: 280px; background: rgba(255,255,255,0.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); border-radius: 20px; padding: 28px 24px; box-shadow: 0 8px 40px rgba(26,39,68,0.12); z-index: 100; }
-  .tracker h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--grey-500); margin-bottom: 18px; text-align: center; }
-  .tracker-progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-  .tracker-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--grey-200); color: var(--grey-500); font-weight: 600; font-size: 0.78rem; display: flex; align-items: center; justify-content: center; transition: all 0.35s ease; position: relative; }
-  .tracker-dot.answered { background: var(--teal); color: var(--white); box-shadow: 0 2px 10px rgba(0,180,216,0.3); }
-  .tracker-dot .dot-label { position: absolute; top: -16px; font-size: 0.6rem; color: var(--grey-500); font-weight: 600; }
-  .tracker-total { text-align: center; margin: 20px 0; }
-  .tracker-total .total-number { font-size: 2.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
-  .tracker-total .total-label { font-size: 0.78rem; color: var(--grey-500); margin-top: 4px; }
-  .tracker-bar { width: 100%; height: 6px; background: var(--grey-200); border-radius: 3px; overflow: hidden; margin: 16px 0; }
-  .tracker-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-dark)); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
-  .tracker-stage { text-align: center; padding: 10px; border-radius: 8px; background: var(--grey-100); margin-top: 12px; }
-  .tracker-stage .stage-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--grey-500); margin-bottom: 4px; }
-  .tracker-stage .stage-name { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
-  .tracker-actions { display: flex; gap: 8px; margin-top: 16px; }
-  .btn-reset, .btn-pdf { flex: 1; padding: 10px; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-  .btn-reset { background: var(--grey-200); color: var(--grey-700); }
-  .btn-reset:hover { background: var(--grey-300); }
-  .btn-pdf { background: var(--navy); color: var(--white); }
-  .btn-pdf:hover { background: var(--navy-light); }
-  .btn-pdf:disabled { opacity: 0.6; cursor: wait; }
-
-  /* RESULTS */
-  .results { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 40px 32px; margin-top: 12px; margin-bottom: 36px; opacity: 0.5; transition: all 0.6s ease; }
-  .results.active { opacity: 1; animation: revealResult 0.6s ease forwards; }
-  @keyframes revealResult { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .results-locked { text-align: center; padding: 30px 20px; color: var(--grey-500); font-size: 0.95rem; }
-  .results-locked svg { margin-bottom: 12px; }
-  .results-content { display: none; }
-  .results.active .results-locked { display: none; }
-  .results.active .results-content { display: block; }
-  .results h2 { font-size: 1.3rem; text-align: center; margin-bottom: 28px; color: var(--navy); }
-  .result-score-circle { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .result-score-circle .score-value { font-size: 2.8rem; font-weight: 800; color: var(--white); line-height: 1; }
-  .result-score-circle .score-of { font-size: 0.8rem; color: rgba(255,255,255,0.8); font-weight: 500; }
-  .result-stage-banner { text-align: center; margin: 24px 0; padding: 20px; border-radius: 12px; }
-  .result-stage-banner .stage-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-  .result-stage-banner .stage-desc { font-size: 0.92rem; line-height: 1.6; opacity: 0.9; }
-  .stage-bar-container { margin: 28px 0; }
-  .stage-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
-  .stage-bar-segment { transition: all 0.3s ease; }
-  .stage-bar-labels { display: flex; font-size: 0.68rem; color: var(--grey-500); font-weight: 500; }
-  .stage-bar-labels span { text-align: center; }
-  .stage-bar-marker { position: absolute; top: -8px; width: 3px; height: 32px; background: var(--navy); border-radius: 2px; transition: left 0.5s ease; z-index: 2; }
-
-  /* SUBMIT BUTTON */
-  .submit-section { text-align: center; margin-top: 28px; padding-top: 24px; border-top: 2px solid var(--grey-200); }
-  .btn-submit { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; border: none; border-radius: 12px; background: var(--navy); color: var(--white); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.3px; }
-  .btn-submit:hover { background: var(--navy-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,39,68,0.2); }
-  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-  .btn-submit.submitted { background: #16a34a; cursor: default; }
-  .btn-submit.submitted:hover { transform: none; box-shadow: none; }
-  .submit-note { font-size: 0.8rem; color: var(--grey-500); margin-top: 10px; }
-
-  /* REF TABLE */
-  .ref-table { margin-top: 36px; }
-  .ref-table h3 { font-size: 1rem; margin-bottom: 16px; color: var(--navy); }
-  .ref-table table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border-radius: 10px; border: 1px solid var(--grey-200); }
-  .ref-table th { background: var(--navy); color: var(--white); padding: 12px 16px; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
-  .ref-table td { padding: 12px 16px; font-size: 0.85rem; border-bottom: 1px solid var(--grey-200); vertical-align: top; color: var(--grey-700); }
-  .ref-table tr:last-child td { border-bottom: none; }
-  .ref-table tr:nth-child(even) td { background: var(--grey-100); }
-  .ref-table .stage-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
-  .ref-table .highlight-row td { background: var(--teal-glow) !important; font-weight: 600; color: var(--navy); }
-  .footer { text-align: center; padding: 32px; color: var(--grey-500); font-size: 0.8rem; }
-
-  /* MOBILE */
-  @media (max-width: 1080px) {
-    .container { margin-right: auto; max-width: 700px; padding-top: 160px; }
-    .tracker { position: fixed; top: 0; left: 0; right: 0; transform: none; width: 100%; border-radius: 0 0 16px 16px; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
-    .tracker h3 { display: none; } .tracker-progress { margin-bottom: 0; } .tracker-total { margin: 0; }
-    .tracker-total .total-number { font-size: 1.6rem; } .tracker-bar { display: none; } .tracker-stage { display: none; }
-    .tracker-actions { margin-top: 0; } .tracker-dot { width: 30px; height: 30px; font-size: 0.7rem; } .tracker-dot .dot-label { display: none; }
-  }
-  @media (max-width: 600px) {
-    .header { padding: 40px 20px 35px; } .header h1 { font-size: 1.6rem; } .header p { font-size: 0.9rem; }
-    .question-card { padding: 22px; } .question-card .q-text { font-size: 1.02rem; }
-    .option { padding: 12px 14px; gap: 12px; } .option .score-badge { width: 30px; height: 30px; font-size: 0.82rem; }
-    .option .option-text { font-size: 0.84rem; } .results { padding: 28px 20px; }
-    .info-card .info-grid { grid-template-columns: 1fr; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ubt-blue:#1e2a5a;--ubt-blue-light:#2a3a72;--ubt-red:#e31837;
+  --accent:#2e5cb8;--accent-dark:#1e4a9a;--accent-glow:rgba(46,92,184,0.12);
+  --bg:#f0f3f8;--white:#ffffff;
+  --g100:#f7f9fc;--g200:#e8edf4;--g300:#d1d9e6;--g500:#8896a7;--g700:#4a5568;
+  --s1:#ef4444;--s2:#f59e0b;--s3:#eab308;--s4:#22c55e;--s5:#2e5cb8;
+  --shadow:0 4px 24px rgba(30,42,90,0.08);--radius:14px;
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ubt-blue);line-height:1.6;-webkit-font-smoothing:antialiased}
+.header{background:var(--ubt-blue);color:var(--white);padding:40px 40px 44px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;right:-20%;width:500px;height:500px;background:radial-gradient(circle,rgba(46,92,184,0.15) 0%,transparent 70%);border-radius:50%}
+.logo-area{position:relative;z-index:1;margin-bottom:20px}
+.logo-area svg{vertical-align:middle}
+.logo-text{display:inline-block;vertical-align:middle;margin-left:12px;text-align:left}
+.logo-text .brand{font-size:2.4rem;font-weight:800;letter-spacing:2px;color:var(--white)}
+.logo-text .tagline{font-size:0.65rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-top:-2px}
+.header h1{font-size:1.9rem;font-weight:700;letter-spacing:-0.3px;margin-bottom:6px;position:relative;z-index:1}
+.header h1 span{color:var(--ubt-red)}
+.header p{font-size:1rem;font-weight:300;opacity:0.8;position:relative;z-index:1}
+.container{max-width:780px;margin:0 auto;padding:36px 24px 120px;text-align:center}
+.container>*{text-align:left}
+.intro{background:var(--white);border-radius:var(--radius);padding:26px 30px;box-shadow:var(--shadow);margin-bottom:32px;border-left:4px solid var(--accent);text-align:left}
+.intro p{font-size:0.95rem;color:var(--g700);line-height:1.7}
+.info-card{background:var(--white);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);margin-bottom:32px}
+.info-card .info-header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.info-card .info-icon{font-size:1.3rem}
+.info-card .info-header h2{font-size:1.05rem;font-weight:700;color:var(--ubt-blue)}
+.info-card .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.info-card .full-width{grid-column:1/-1}
+.info-card label{display:block;font-size:0.78rem;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.info-card input{width:100%;padding:11px 15px;border:2px solid var(--g200);border-radius:10px;font-family:'Inter',sans-serif;font-size:0.93rem;color:var(--ubt-blue);transition:all .25s;background:var(--white)}
+.info-card input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.info-card input::placeholder{color:var(--g300)}
+.section-divider{background:var(--ubt-blue);color:var(--white);border-radius:var(--radius);padding:30px 32px;margin:40px 0 28px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.section-divider::after{content:'';position:absolute;top:-40%;right:-15%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%);border-radius:50%}
+.section-divider .part-label{font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0.6;margin-bottom:6px;position:relative;z-index:1}
+.section-divider h2{font-size:1.35rem;font-weight:800;margin-bottom:10px;position:relative;z-index:1}
+.section-divider p{font-size:0.88rem;font-weight:300;opacity:0.8;line-height:1.6;max-width:600px;margin:0 auto;position:relative;z-index:1}
+.question-card{background:var(--white);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);margin-bottom:24px;text-align:left}
+.q-header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.q-number{background:var(--ubt-blue);color:var(--white);font-size:0.72rem;font-weight:700;padding:5px 11px;border-radius:18px;letter-spacing:.5px;white-space:nowrap}
+.q-category{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.1px;color:var(--accent)}
+.q-text{font-size:1.1rem;font-weight:600;margin:10px 0 18px;color:var(--ubt-blue)}
+.options{display:flex;flex-direction:column;gap:9px}
+.option{display:flex;align-items:center;gap:14px;padding:13px 16px;border:2px solid var(--g200);border-radius:10px;cursor:pointer;transition:all .25s;background:var(--white)}
+.option:hover{border-color:var(--accent);background:var(--accent-glow);transform:translateY(-1px);box-shadow:0 4px 16px rgba(46,92,184,0.08)}
+.option.selected{border-color:var(--accent);background:var(--accent-glow);box-shadow:0 0 0 3px rgba(46,92,184,0.12)}
+.option .score-badge{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--g200);color:var(--ubt-blue);font-weight:700;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.option.selected .score-badge{background:var(--accent);color:var(--white)}
+.option .option-text{font-size:0.9rem;color:var(--g700);flex:1;line-height:1.5}
+.option.selected .option-text{color:var(--ubt-blue);font-weight:500}
+.option .tick{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid var(--g300);display:flex;align-items:center;justify-content:center;transition:all .25s}
+.option.selected .tick{background:var(--accent);border-color:var(--accent)}
+.option .tick svg{opacity:0;transition:opacity .2s}
+.option.selected .tick svg{opacity:1}
+.text-input{width:100%;padding:14px 16px;border:2px solid var(--g200);border-radius:10px;font-family:'Inter',sans-serif;font-size:0.92rem;color:var(--ubt-blue);resize:vertical;min-height:100px;transition:all .25s;background:var(--white);line-height:1.6}
+.text-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.text-input::placeholder{color:var(--g300)}
+.results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;opacity:.5;transition:all .6s;text-align:left}
+.results.active{opacity:1;animation:revealResult .6s ease forwards}
+@keyframes revealResult{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.results-locked{text-align:center;padding:28px 20px;color:var(--g500);font-size:0.93rem}
+.results-locked svg{margin-bottom:10px}
+.results-content{display:none}
+.results.active .results-locked{display:none}
+.results.active .results-content{display:block}
+.results h2{font-size:1.2rem;text-align:center;margin-bottom:24px;color:var(--ubt-blue)}
+.result-score-circle{width:110px;height:110px;border-radius:50%;margin:0 auto 10px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.result-score-circle .score-value{font-size:2.6rem;font-weight:800;color:var(--white);line-height:1}
+.result-score-circle .score-of{font-size:0.75rem;color:rgba(255,255,255,0.8);font-weight:500}
+.result-stage-banner{text-align:center;margin:20px 0;padding:18px;border-radius:12px}
+.result-stage-banner .stage-title{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.result-stage-banner .stage-desc{font-size:0.88rem;line-height:1.6;opacity:.9}
+.stage-bar-container{margin:24px 0}
+.stage-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-bottom:6px}
+.stage-bar-segment{transition:all .3s}
+.stage-bar-labels{display:flex;font-size:0.65rem;color:var(--g500);font-weight:500}
+.stage-bar-labels span{text-align:center}
+.stage-bar-marker{position:absolute;top:-8px;width:3px;height:30px;background:var(--ubt-blue);border-radius:2px;transition:left .5s;z-index:2}
+.leader-results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;opacity:.5;transition:all .6s}
+.leader-results.active{opacity:1;animation:revealResult .6s ease forwards}
+.leader-results-locked{text-align:center;padding:28px 20px;color:var(--g500);font-size:0.93rem}
+.leader-results-locked svg{margin-bottom:10px}
+.leader-results-content{display:none}
+.leader-results.active .leader-results-locked{display:none}
+.leader-results.active .leader-results-content{display:block}
+.ref-table{margin-top:28px}
+.ref-table h3{font-size:0.95rem;margin-bottom:14px;color:var(--ubt-blue)}
+.ref-table table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:10px;border:1px solid var(--g200)}
+.ref-table th{background:var(--ubt-blue);color:var(--white);padding:11px 14px;text-align:left;font-size:0.75rem;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.ref-table td{padding:11px 14px;font-size:0.82rem;border-bottom:1px solid var(--g200);vertical-align:top;color:var(--g700)}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table tr:nth-child(even) td{background:var(--g100)}
+.ref-table .stage-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.ref-table .highlight-row td{background:var(--accent-glow) !important;font-weight:600;color:var(--ubt-blue)}
+.submit-section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;text-align:center}
+.submit-section h2{font-size:1.15rem;margin-bottom:8px;color:var(--ubt-blue)}
+.submit-section p.sub{font-size:0.88rem;color:var(--g500);margin-bottom:24px}
+.btn-submit{display:inline-flex;align-items:center;gap:10px;padding:16px 40px;border:none;border-radius:12px;background:var(--ubt-red);color:var(--white);font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;letter-spacing:.3px}
+.btn-submit:hover{background:#c71530;transform:translateY(-2px);box-shadow:0 6px 20px rgba(227,24,55,0.25)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-submit.submitted{background:#16a34a;cursor:default}
+.btn-submit.submitted:hover{transform:none;box-shadow:none}
+.submit-note{font-size:0.78rem;color:var(--g500);margin-top:12px}
+.tracker{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.5);padding:12px 24px;box-shadow:0 -4px 30px rgba(30,42,90,0.1);z-index:100;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.tracker-group{display:flex;align-items:center;gap:8px}
+.tracker-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--g500);white-space:nowrap}
+.tracker-dots{display:flex;gap:5px}
+.tracker-dot{width:28px;height:28px;border-radius:50%;background:var(--g200);color:var(--g500);font-weight:600;font-size:0.7rem;display:flex;align-items:center;justify-content:center;transition:all .35s}
+.tracker-dot.answered{background:var(--accent);color:var(--white);box-shadow:0 2px 8px rgba(46,92,184,0.3)}
+.tracker-dot.leader-answered{background:var(--ubt-red);color:var(--white);box-shadow:0 2px 8px rgba(227,24,55,0.3)}
+.tracker-score{font-size:1.3rem;font-weight:800;color:var(--ubt-blue);min-width:40px;text-align:center}
+.tracker-score-label{font-size:0.6rem;color:var(--g500)}
+.tracker-divider{width:1px;height:28px;background:var(--g300)}
+.tracker-actions{display:flex;gap:6px}
+.btn-reset,.btn-pdf{padding:8px 14px;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-reset{background:var(--g200);color:var(--g700)}
+.btn-reset:hover{background:var(--g300)}
+.btn-pdf{background:var(--ubt-blue);color:var(--white)}
+.btn-pdf:hover{background:var(--ubt-blue-light)}
+.btn-pdf:disabled{opacity:.6;cursor:wait}
+.footer{text-align:center;padding:20px;color:var(--g500);font-size:0.78rem;margin-bottom:60px}
+@media(max-width:700px){
+  .header{padding:30px 18px 34px}.header h1{font-size:1.4rem}.logo-text .brand{font-size:1.8rem}
+  .container{padding:24px 16px 130px}.question-card,.info-card{padding:22px}.q-text{font-size:1rem}
+  .option{padding:11px 13px;gap:10px}.option .score-badge{width:28px;height:28px;font-size:.8rem}
+  .option .option-text{font-size:.82rem}.info-card .info-grid{grid-template-columns:1fr}
+  .tracker{gap:10px;padding:10px 14px}.tracker-dot{width:24px;height:24px;font-size:.6rem}
+  .section-divider{padding:24px 20px}.section-divider h2{font-size:1.1rem}
+}
 </style>
 </head>
 <body>
-
 <div class="header">
+  <div class="logo-area">
+    <svg width="52" height="52" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(0,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(45,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(90,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(135,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(180,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(225,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(270,50,50)"/>
+      <polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate(315,50,50)"/>
+    </svg>
+    <div class="logo-text">
+      <div class="brand">UBT</div>
+      <div class="tagline">Creating Possibilities</div>
+    </div>
+  </div>
   <h1><span>AI</span> Readiness Self-Assessment</h1>
-  <p>Pre-Seminar Questionnaire for Managing Directors</p>
+  <p>Pre-AI Networking Questionnaire</p>
 </div>
-
-<div class="tracker" id="tracker">
-  <h3>Your Progress</h3>
-  <div class="tracker-progress">
-    <div class="tracker-dot" id="dot-1"><span class="dot-label">Q1</span>&mdash;</div>
-    <div class="tracker-dot" id="dot-2"><span class="dot-label">Q2</span>&mdash;</div>
-    <div class="tracker-dot" id="dot-3"><span class="dot-label">Q3</span>&mdash;</div>
-    <div class="tracker-dot" id="dot-4"><span class="dot-label">Q4</span>&mdash;</div>
-    <div class="tracker-dot" id="dot-5"><span class="dot-label">Q5</span>&mdash;</div>
-    <div class="tracker-dot" id="dot-6"><span class="dot-label">Q6</span>&mdash;</div>
-  </div>
-  <div class="tracker-bar"><div class="tracker-bar-fill" id="trackerBarFill"></div></div>
-  <div class="tracker-total">
-    <div class="total-number" id="trackerTotal">0</div>
-    <div class="total-label"><span id="trackerCount">0</span> of 6 answered &bull; out of 30</div>
-  </div>
-  <div class="tracker-stage" id="trackerStage">
-    <div class="stage-label">Current Stage</div>
-    <div class="stage-name" id="trackerStageName">&mdash;</div>
-  </div>
-  <div class="tracker-actions">
-    <button class="btn-reset" onclick="resetAll()">Reset All</button>
-    <button class="btn-pdf" id="btnPdf" onclick="downloadPDF()">&#11015; Download PDF</button>
-  </div>
-</div>
-
 <div class="container" id="mainContainer">
-
-  <div class="intro">
-    <p>Answer each question honestly by selecting the option that best describes where your organisation is today. Your total score will calculate automatically, and your AI maturity stage will be revealed once all six questions are answered.</p>
-  </div>
-
-  <!-- CUSTOMER INFO -->
+  <div class="intro"><p>Complete all three parts to help us tailor the AI Networking session to your specific needs, challenges and opportunities. Your responses are confidential and will be used solely to shape the session.</p></div>
   <div class="info-card" id="infoCard">
-    <div class="info-header">
-      <span class="info-icon">&#128100;</span>
-      <h2>Your Details</h2>
-    </div>
+    <div class="info-header"><span class="info-icon">&#128100;</span><h2>Your Details</h2></div>
     <div class="info-grid">
-      <div>
-        <label for="custName">Full Name *</label>
-        <input type="text" id="custName" placeholder="e.g. John Smith" required>
-      </div>
-      <div>
-        <label for="custCompany">Company *</label>
-        <input type="text" id="custCompany" placeholder="e.g. ABC Ltd" required>
-      </div>
-      <div class="full-width">
-        <label for="custEmail">Email Address *</label>
-        <input type="email" id="custEmail" placeholder="e.g. john@company.com" required>
-      </div>
+      <div><label for="custName">Full Name *</label><input type="text" id="custName" placeholder="e.g. John Smith"></div>
+      <div><label for="custCompany">Company *</label><input type="text" id="custCompany" placeholder="e.g. ABC Ltd"></div>
+      <div class="full-width"><label for="custEmail">Email Address *</label><input type="email" id="custEmail" placeholder="e.g. john@company.com"></div>
     </div>
   </div>
+  <div class="section-divider"><div class="part-label">Part 1</div><h2>AI Maturity Assessment</h2><p>Score yourself 1–5 on each question. Your total will determine your organisation’s AI maturity stage.</p></div>
+<div class="question-card" id="q1">
+<div class="q-header"><span class="q-number">Q1</span><span class="q-category">Leadership &amp; Oversight</span></div>
+<div class="q-text">Who in your organisation owns the AI agenda?</div>
+<div class="options">
+<div class="option" onclick="selectOption(1,1)"><div class="score-badge">1</div><div class="option-text">No one — AI is happening without any clear ownership</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(1,2)"><div class="score-badge">2</div><div class="option-text">IT manages it informally alongside other responsibilities</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(1,3)"><div class="score-badge">3</div><div class="option-text">A senior leader has oversight as part of a broader role</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(1,4)"><div class="score-badge">4</div><div class="option-text">We have a dedicated AI lead or function</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(1,5)"><div class="score-badge">5</div><div class="option-text">AI governance sits at board level with a clear mandate</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="q2">
+<div class="q-header"><span class="q-number">Q2</span><span class="q-category">Governance &amp; Deployment</span></div>
+<div class="q-text">How governed is AI deployment in your business?</div>
+<div class="options">
+<div class="option" onclick="selectOption(2,1)"><div class="score-badge">1</div><div class="option-text">No policy — people use whatever tools they choose</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(2,2)"><div class="score-badge">2</div><div class="option-text">Informal guidelines exist but nothing is enforced</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(2,3)"><div class="score-badge">3</div><div class="option-text">A standard approved AI tool is in place</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(2,4)"><div class="score-badge">4</div><div class="option-text">System access is controlled and AI integration is managed</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(2,5)"><div class="score-badge">5</div><div class="option-text">Full governance — approved tools, validated outputs, clear data boundaries and audit trails</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="q3">
+<div class="q-header"><span class="q-number">Q3</span><span class="q-category">Strategy</span></div>
+<div class="q-text">Does AI feature in your business strategy?</div>
+<div class="options">
+<div class="option" onclick="selectOption(3,1)"><div class="score-badge">1</div><div class="option-text">Not at all</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(3,2)"><div class="score-badge">2</div><div class="option-text">Being discussed but not formally in the strategy</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(3,3)"><div class="score-badge">3</div><div class="option-text">In the strategy but without specific goals or investment</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(3,4)"><div class="score-badge">4</div><div class="option-text">A defined strategic priority with budget and ownership</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(3,5)"><div class="score-badge">5</div><div class="option-text">Central to our competitive strategy, reviewed at board level</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="q4">
+<div class="q-header"><span class="q-number">Q4</span><span class="q-category">Value &amp; ROI</span></div>
+<div class="q-text">Is AI delivering measurable value in your business?</div>
+<div class="options">
+<div class="option" onclick="selectOption(4,1)"><div class="score-badge">1</div><div class="option-text">No meaningful investment and no measure of impact</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(4,2)"><div class="score-badge">2</div><div class="option-text">Spending on tools but no clear view of what they deliver</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(4,3)"><div class="score-badge">3</div><div class="option-text">Some efficiency gains but nothing formally measured</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(4,4)"><div class="score-badge">4</div><div class="option-text">Specific use cases with evidenced, measurable ROI</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(4,5)"><div class="score-badge">5</div><div class="option-text">Quantifiable value across multiple functions, tracked at board level</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="q5">
+<div class="q-header"><span class="q-number">Q5</span><span class="q-category">People &amp; Culture</span></div>
+<div class="q-text">How embedded is AI across your workforce?</div>
+<div class="options">
+<div class="option" onclick="selectOption(5,1)"><div class="score-badge">1</div><div class="option-text">Almost no one uses AI tools day to day</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(5,2)"><div class="score-badge">2</div><div class="option-text">A few individuals have adopted tools on their own initiative</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(5,3)"><div class="score-badge">3</div><div class="option-text">Tools available but usage is patchy and unmanaged</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(5,4)"><div class="score-badge">4</div><div class="option-text">AI encouraged with training and adoption tracked</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(5,5)"><div class="score-badge">5</div><div class="option-text">AI embedded in onboarding, job design and performance expectations</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="q6">
+<div class="q-header"><span class="q-number">Q6</span><span class="q-category">Data Readiness</span></div>
+<div class="q-text">How ready is your data to power AI?</div>
+<div class="options">
+<div class="option" onclick="selectOption(6,1)"><div class="score-badge">1</div><div class="option-text">Siloed, inconsistent — no clear picture of what we hold</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(6,2)"><div class="score-badge">2</div><div class="option-text">Data exists in various systems but not connected or structured for AI</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(6,3)"><div class="score-badge">3</div><div class="option-text">Some structured data in place but unstructured data is untapped</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(6,4)"><div class="score-badge">4</div><div class="option-text">Data warehouse in place; connecting structured and unstructured sources</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectOption(6,5)"><div class="score-badge">5</div><div class="option-text">Fully governed — structured and unstructured data is clean, connected and AI-ready</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
 
-  <!-- Q1 -->
-  <div class="question-card" id="q1">
-    <div class="q-header"><span class="q-number">Q1</span><span class="q-category">Leadership &amp; Oversight</span></div>
-    <div class="q-text">Who in your organisation owns the AI agenda?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(1,1)"><div class="score-badge">1</div><div class="option-text">No one &mdash; AI is happening without any clear ownership</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(1,2)"><div class="score-badge">2</div><div class="option-text">IT manages it informally alongside other responsibilities</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(1,3)"><div class="score-badge">3</div><div class="option-text">A senior leader has oversight as part of a broader role</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(1,4)"><div class="score-badge">4</div><div class="option-text">We have a dedicated AI lead or function</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(1,5)"><div class="score-badge">5</div><div class="option-text">AI governance sits at board level with a clear mandate</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- Q2 -->
-  <div class="question-card" id="q2">
-    <div class="q-header"><span class="q-number">Q2</span><span class="q-category">Governance &amp; Deployment</span></div>
-    <div class="q-text">How governed is AI deployment in your business?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(2,1)"><div class="score-badge">1</div><div class="option-text">No policy &mdash; people use whatever tools they choose</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(2,2)"><div class="score-badge">2</div><div class="option-text">Informal guidelines exist but nothing is enforced</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(2,3)"><div class="score-badge">3</div><div class="option-text">A standard approved AI tool is in place</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(2,4)"><div class="score-badge">4</div><div class="option-text">System access is controlled and AI integration is managed</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(2,5)"><div class="score-badge">5</div><div class="option-text">Full governance &mdash; approved tools, validated outputs, clear data boundaries and audit trails</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- Q3 -->
-  <div class="question-card" id="q3">
-    <div class="q-header"><span class="q-number">Q3</span><span class="q-category">Strategy</span></div>
-    <div class="q-text">Does AI feature in your business strategy?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(3,1)"><div class="score-badge">1</div><div class="option-text">Not at all</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(3,2)"><div class="score-badge">2</div><div class="option-text">Being discussed but not formally in the strategy</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(3,3)"><div class="score-badge">3</div><div class="option-text">In the strategy but without specific goals or investment</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(3,4)"><div class="score-badge">4</div><div class="option-text">A defined strategic priority with budget and ownership</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(3,5)"><div class="score-badge">5</div><div class="option-text">Central to our competitive strategy, reviewed at board level</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- Q4 -->
-  <div class="question-card" id="q4">
-    <div class="q-header"><span class="q-number">Q4</span><span class="q-category">Value &amp; ROI</span></div>
-    <div class="q-text">Is AI delivering measurable value in your business?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(4,1)"><div class="score-badge">1</div><div class="option-text">No meaningful investment and no measure of impact</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(4,2)"><div class="score-badge">2</div><div class="option-text">Spending on tools but no clear view of what they deliver</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(4,3)"><div class="score-badge">3</div><div class="option-text">Some efficiency gains but nothing formally measured</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(4,4)"><div class="score-badge">4</div><div class="option-text">Specific use cases with evidenced, measurable ROI</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(4,5)"><div class="score-badge">5</div><div class="option-text">Quantifiable value across multiple functions, tracked at board level</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- Q5 -->
-  <div class="question-card" id="q5">
-    <div class="q-header"><span class="q-number">Q5</span><span class="q-category">People &amp; Culture</span></div>
-    <div class="q-text">How embedded is AI across your workforce?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(5,1)"><div class="score-badge">1</div><div class="option-text">Almost no one uses AI tools day to day</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(5,2)"><div class="score-badge">2</div><div class="option-text">A few individuals have adopted tools on their own initiative</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(5,3)"><div class="score-badge">3</div><div class="option-text">Tools available but usage is patchy and unmanaged</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(5,4)"><div class="score-badge">4</div><div class="option-text">AI encouraged with training and adoption tracked</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(5,5)"><div class="score-badge">5</div><div class="option-text">AI embedded in onboarding, job design and performance expectations</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- Q6 -->
-  <div class="question-card" id="q6">
-    <div class="q-header"><span class="q-number">Q6</span><span class="q-category">Data Readiness</span></div>
-    <div class="q-text">How ready is your data to power AI?</div>
-    <div class="options">
-      <div class="option" onclick="selectOption(6,1)"><div class="score-badge">1</div><div class="option-text">Siloed, inconsistent &mdash; no clear picture of what we hold</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(6,2)"><div class="score-badge">2</div><div class="option-text">Data exists in various systems but not connected or structured for AI</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(6,3)"><div class="score-badge">3</div><div class="option-text">Some structured data in place but unstructured data is untapped</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(6,4)"><div class="score-badge">4</div><div class="option-text">Data warehouse in place; connecting structured and unstructured sources</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-      <div class="option" onclick="selectOption(6,5)"><div class="score-badge">5</div><div class="option-text">Fully governed &mdash; structured and unstructured data is clean, connected and AI-ready</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- RESULTS -->
   <div class="results" id="results">
-    <div class="results-locked">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8896a7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      <p>Complete all 6 questions to reveal your result</p>
-    </div>
+    <div class="results-locked"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8896a7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><p>Complete all 6 questions above to reveal your AI maturity stage</p></div>
     <div class="results-content">
       <h2>Your AI Maturity Result</h2>
-      <div class="result-score-circle" id="resultCircle">
-        <div class="score-value" id="resultScore">0</div>
-        <div class="score-of">out of 30</div>
-      </div>
-      <div class="result-stage-banner" id="resultBanner">
-        <div class="stage-title" id="resultStageTitle">&mdash;</div>
-        <div class="stage-desc" id="resultStageDesc">&mdash;</div>
-      </div>
-      <div class="stage-bar-container">
-        <div style="position:relative;">
-          <div class="stage-bar">
-            <div class="stage-bar-segment" style="width:16.67%;background:var(--stage1);"></div>
-            <div class="stage-bar-segment" style="width:20.83%;background:var(--stage2);"></div>
-            <div class="stage-bar-segment" style="width:20.83%;background:var(--stage3);"></div>
-            <div class="stage-bar-segment" style="width:20.83%;background:var(--stage4);"></div>
-            <div class="stage-bar-segment" style="width:20.84%;background:var(--stage5);"></div>
-          </div>
-          <div class="stage-bar-marker" id="stageMarker" style="left:0%;"></div>
-        </div>
-        <div class="stage-bar-labels">
-          <span style="width:16.67%">6&ndash;9</span><span style="width:20.83%">10&ndash;14</span><span style="width:20.83%">15&ndash;19</span><span style="width:20.83%">20&ndash;24</span><span style="width:20.84%">25&ndash;30</span>
-        </div>
-      </div>
-
-      <!-- SUBMIT SECTION -->
-      <div class="submit-section" id="submitSection">
-        <button class="btn-submit" id="btnSubmit" onclick="submitToGoogleSheets()">
-          &#128640; Submit My Results
-        </button>
-        <p class="submit-note">Your responses will be shared with the seminar organisers to tailor the session to your needs.</p>
-      </div>
-
-      <div class="ref-table">
-        <h3>AI Maturity Stage Reference</h3>
-        <table>
-          <thead><tr><th>Score</th><th>Stage</th><th>Description</th></tr></thead>
-          <tbody id="refTableBody">
-            <tr data-stage="1"><td>6 &ndash; 9</td><td><span class="stage-dot" style="background:var(--stage1)"></span>Stage 1 &mdash; Unaware</td><td>AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.</td></tr>
-            <tr data-stage="2"><td>10 &ndash; 14</td><td><span class="stage-dot" style="background:var(--stage2)"></span>Stage 2 &mdash; Experimenting</td><td>Individuals are using AI tools on their own initiative. No coordination, governance or strategy in place.</td></tr>
-            <tr data-stage="3"><td>15 &ndash; 19</td><td><span class="stage-dot" style="background:var(--stage3)"></span>Stage 3 &mdash; Organising</td><td>Leadership is engaged. Governance is being built. First use cases are live.</td></tr>
-            <tr data-stage="4"><td>20 &ndash; 24</td><td><span class="stage-dot" style="background:var(--stage4)"></span>Stage 4 &mdash; Scaling</td><td>AI is embedded in key functions with measurable ROI. A roadmap and board visibility are in place.</td></tr>
-            <tr data-stage="5"><td>25 &ndash; 30</td><td><span class="stage-dot" style="background:var(--stage5)"></span>Stage 5 &mdash; Leading</td><td>AI is core to your competitive strategy. You are building advantage, not just efficiency.</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="result-score-circle" id="resultCircle"><div class="score-value" id="resultScore">0</div><div class="score-of">out of 30</div></div>
+      <div class="result-stage-banner" id="resultBanner"><div class="stage-title" id="resultStageTitle">&mdash;</div><div class="stage-desc" id="resultStageDesc">&mdash;</div></div>
+      <div class="stage-bar-container"><div style="position:relative"><div class="stage-bar">
+        <div class="stage-bar-segment" style="width:16.67%;background:var(--s1)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s2)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s3)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s4)"></div>
+        <div class="stage-bar-segment" style="width:20.84%;background:var(--s5)"></div>
+      </div><div class="stage-bar-marker" id="stageMarker" style="left:0%"></div></div>
+      <div class="stage-bar-labels"><span style="width:16.67%">6&ndash;9</span><span style="width:20.83%">10&ndash;14</span><span style="width:20.83%">15&ndash;19</span><span style="width:20.83%">20&ndash;24</span><span style="width:20.84%">25&ndash;30</span></div></div>
+      <div class="ref-table"><h3>AI Maturity Stage Reference</h3><table><thead><tr><th>Score</th><th>Stage</th><th>Description</th></tr></thead><tbody id="refTableBody">
+        <tr data-stage="1"><td>6&ndash;9</td><td><span class="stage-dot" style="background:var(--s1)"></span>Stage 1 &mdash; Unaware</td><td>AI is happening around you but not intentionally inside your business.</td></tr>
+        <tr data-stage="2"><td>10&ndash;14</td><td><span class="stage-dot" style="background:var(--s2)"></span>Stage 2 &mdash; Experimenting</td><td>Individuals using AI on their own initiative. No coordination or governance.</td></tr>
+        <tr data-stage="3"><td>15&ndash;19</td><td><span class="stage-dot" style="background:var(--s3)"></span>Stage 3 &mdash; Organising</td><td>Leadership is engaged. Governance is being built. First use cases are live.</td></tr>
+        <tr data-stage="4"><td>20&ndash;24</td><td><span class="stage-dot" style="background:var(--s4)"></span>Stage 4 &mdash; Scaling</td><td>AI embedded in key functions with measurable ROI. Board visibility in place.</td></tr>
+        <tr data-stage="5"><td>25&ndash;30</td><td><span class="stage-dot" style="background:var(--s5)"></span>Stage 5 &mdash; Leading</td><td>AI is core to your competitive strategy. Building advantage, not just efficiency.</td></tr>
+      </tbody></table></div>
     </div>
   </div>
-  <div class="footer">Prepared for the AI Networking Seminar</div>
+  <div class="section-divider"><div class="part-label">Part 2</div><h2>Your Business Today</h2><p>A few open questions in your own words. These help us frame the session around the outcomes and challenges that actually matter to you.</p></div>
+<div class="question-card" id="q7">
+<div class="q-header"><span class="q-number">Q7</span><span class="q-category">Desired Outcome</span></div>
+<div class="q-text">What is the single most valuable outcome you want to walk away from this session with?</div>
+<textarea class="text-input" id="input_q7" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+<div class="question-card" id="q8">
+<div class="q-header"><span class="q-number">Q8</span><span class="q-category">Your Journey</span></div>
+<div class="q-text">Where are you on your AI journey today, and how do you see AI transforming your business over the next 12–24 months?</div>
+<textarea class="text-input" id="input_q8" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+<div class="question-card" id="q9">
+<div class="q-header"><span class="q-number">Q9</span><span class="q-category">Biggest Blocker</span></div>
+<div class="q-text">What is the single biggest challenge or blocker to embracing AI in your business?</div>
+<textarea class="text-input" id="input_q9" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+<div class="question-card" id="q10">
+<div class="q-header"><span class="q-number">Q10</span><span class="q-category">Highest-Impact Area</span></div>
+<div class="q-text">Which area of your business would benefit most from AI right now? (e.g. Operations, Sales, Marketing, Finance, Customer Service)</div>
+<textarea class="text-input" id="input_q10" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+<div class="question-card" id="q11">
+<div class="q-header"><span class="q-number">Q11</span><span class="q-category">Tools in Use</span></div>
+<div class="q-text">Which AI tools or models have you introduced so far — and how do you validate them before rolling them out?</div>
+<textarea class="text-input" id="input_q11" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+<div class="question-card" id="q12">
+<div class="q-header"><span class="q-number">Q12</span><span class="q-category">IT &amp; Security</span></div>
+<div class="q-text">How would you describe your current IT support and data security setup?</div>
+<textarea class="text-input" id="input_q12" placeholder="Type your answer here…" rows="4"></textarea>
 </div>
 
+  <div class="section-divider"><div class="part-label">Part 3</div><h2>You as an AI-Driven Leader</h2><p>Inspired by Geoff Woods’ <em>The AI-Driven Leader</em>. This part is about you personally, not your organisation — so it is scored separately and does not affect your maturity stage above.</p></div>
+<div class="question-card" id="l1">
+<div class="q-header"><span class="q-number" style="background:var(--ubt-red)">L1</span><span class="q-category">Personal Use</span></div>
+<div class="q-text">How often do you personally use AI in your own work?</div>
+<div class="options">
+<div class="option" onclick="selectLeader(1,1)"><div class="score-badge">1</div><div class="option-text">Never</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(1,2)"><div class="score-badge">2</div><div class="option-text">Occasionally, for one-off tasks</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(1,3)"><div class="score-badge">3</div><div class="option-text">Weekly, for routine tasks</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(1,4)"><div class="score-badge">4</div><div class="option-text">Daily, across a range of tasks</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(1,5)"><div class="score-badge">5</div><div class="option-text">Daily, as an integral part of how I work</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="l2">
+<div class="q-header"><span class="q-number" style="background:var(--ubt-red)">L2</span><span class="q-category">Tasks vs Strategy</span></div>
+<div class="q-text">What do you mainly use AI for?</div>
+<div class="options">
+<div class="option" onclick="selectLeader(2,1)"><div class="score-badge">1</div><div class="option-text">I don’t use it</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(2,2)"><div class="score-badge">2</div><div class="option-text">Drafting and admin</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(2,3)"><div class="score-badge">3</div><div class="option-text">Research and summarising</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(2,4)"><div class="score-badge">4</div><div class="option-text">Analysis and problem-solving</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(2,5)"><div class="score-badge">5</div><div class="option-text">Strategic thinking and decision-making — as a thought partner</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="l3">
+<div class="q-header"><span class="q-number" style="background:var(--ubt-red)">L3</span><span class="q-category">Challenging Your Thinking</span></div>
+<div class="q-text">Do you use AI to test your assumptions and surface your blind spots?</div>
+<div class="options">
+<div class="option" onclick="selectLeader(3,1)"><div class="score-badge">1</div><div class="option-text">Never considered it</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(3,2)"><div class="score-badge">2</div><div class="option-text">Rarely — I use it mainly to confirm what I already think</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(3,3)"><div class="score-badge">3</div><div class="option-text">Sometimes ask it to find gaps in my thinking</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(3,4)"><div class="score-badge">4</div><div class="option-text">Regularly ask it to challenge my reasoning</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(3,5)"><div class="score-badge">5</div><div class="option-text">I deliberately use it as a devil’s advocate on key decisions</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="l4">
+<div class="q-header"><span class="q-number" style="background:var(--ubt-red)">L4</span><span class="q-category">Confidence &amp; Mindset</span></div>
+<div class="q-text">How do you feel about leading AI adoption in your business?</div>
+<div class="options">
+<div class="option" onclick="selectLeader(4,1)"><div class="score-badge">1</div><div class="option-text">Anxious — I’m not sure where to start</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(4,2)"><div class="score-badge">2</div><div class="option-text">Cautious — more aware of the risks than the opportunity</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(4,3)"><div class="score-badge">3</div><div class="option-text">Curious — open, but still learning</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(4,4)"><div class="score-badge">4</div><div class="option-text">Confident — actively driving it forward</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+<div class="option" onclick="selectLeader(4,5)"><div class="score-badge">5</div><div class="option-text">Energised — I see it as central to our future advantage</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+</div>
+<div class="question-card" id="l5">
+<div class="q-header"><span class="q-number" style="background:var(--ubt-red)">L5</span><span class="q-category">One Decision</span></div>
+<div class="q-text">In one line: what is the first real decision you’d like to work through with an AI thinking partner?</div>
+<textarea class="text-input" id="input_l5" placeholder="Type your answer here…" rows="4"></textarea>
+</div>
+
+  <div class="leader-results" id="leaderResults">
+    <div class="leader-results-locked"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8896a7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><p>Complete L1–L4 to reveal your AI leadership score</p></div>
+    <div class="leader-results-content">
+      <h2>Your AI Leadership Score</h2>
+      <div class="result-score-circle" id="leaderCircle" style="background:var(--ubt-red)"><div class="score-value" id="leaderScore">0</div><div class="score-of">out of 20</div></div>
+      <div class="result-stage-banner" id="leaderBanner" style="background:rgba(227,24,55,0.08);color:var(--ubt-blue)"><div class="stage-title" id="leaderTitle">&mdash;</div><div class="stage-desc" id="leaderDesc">&mdash;</div></div>
+    </div>
+  </div>
+  <div class="submit-section" id="submitSection">
+    <h2>Ready to Submit?</h2>
+    <p class="sub">Once you’re happy with your answers, click below to send your responses to the UBT team.</p>
+    <button class="btn-submit" id="btnSubmit" onclick="submitToGoogleSheets()">&#128640; Submit My Results</button>
+    <p class="submit-note">Your responses will be shared with the UBT team to tailor the session to your needs.</p>
+  </div>
+  <div class="footer">Prepared for the AI Networking Session &bull; UBT &mdash; Creating Possibilities</div>
+</div>
+<div class="tracker" id="tracker">
+  <div class="tracker-group"><span class="tracker-label">Part 1</span><div class="tracker-dots" id="p1dots"></div><div><div class="tracker-score" id="p1total">0</div><div class="tracker-score-label">/30</div></div></div>
+  <div class="tracker-divider"></div>
+  <div class="tracker-group"><span class="tracker-label">Leader</span><div class="tracker-dots" id="ldots"></div><div><div class="tracker-score" id="ltotal">0</div><div class="tracker-score-label">/20</div></div></div>
+  <div class="tracker-divider"></div>
+  <div class="tracker-actions">
+    <button class="btn-reset" onclick="resetAll()">Reset</button>
+    <button class="btn-pdf" id="btnPdf" onclick="downloadPDF()">&#11015; PDF</button>
+  </div>
+</div>
 <script>
-  // ============================================================
-  // GOOGLE SHEETS CONNECTION
-  // Replace the URL below with your Google Apps Script Web App URL
-  // (See the setup guide for how to get this URL)
-  // ============================================================
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHijZqtU6C1074VBqlF34aATz4o9YLOYiqBtmAgompzIxxqi0rl42qawXBfEr2Lne5/exec';
-
-  const answers = {};
-  const stages = [
-    { min:6, max:9, num:1, name:"Stage 1 \u2014 Unaware", desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.", color:"var(--stage1)" },
-    { min:10, max:14, num:2, name:"Stage 2 \u2014 Experimenting", desc:"Individuals are using AI tools on their own initiative. No coordination, governance or strategy in place.", color:"var(--stage2)" },
-    { min:15, max:19, num:3, name:"Stage 3 \u2014 Organising", desc:"Leadership is engaged. Governance is being built. First use cases are live.", color:"var(--stage3)" },
-    { min:20, max:24, num:4, name:"Stage 4 \u2014 Scaling", desc:"AI is embedded in key functions with measurable ROI. A roadmap and board visibility are in place.", color:"var(--stage4)" },
-    { min:25, max:30, num:5, name:"Stage 5 \u2014 Leading", desc:"AI is core to your competitive strategy. You are building advantage, not just efficiency.", color:"var(--stage5)" }
-  ];
-
-  function getStage(score) {
-    for (const s of stages) { if (score >= s.min && score <= s.max) return s; }
-    return stages[0];
-  }
-
-  function selectOption(q, score) {
-    const card = document.getElementById('q' + q);
-    card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-    card.querySelectorAll('.option')[score - 1].classList.add('selected');
-    answers[q] = score;
-    updateTracker();
-    setTimeout(() => {
-      for (let i = 1; i <= 6; i++) {
-        if (!answers[i]) { document.getElementById('q' + i).scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-      }
-      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 350);
-  }
-
-  function updateTracker() {
-    let total = 0, count = 0;
-    for (let i = 1; i <= 6; i++) {
-      const dot = document.getElementById('dot-' + i);
-      if (answers[i]) { dot.textContent = answers[i]; dot.classList.add('answered'); total += answers[i]; count++; }
-      else { dot.innerHTML = '<span class="dot-label">Q' + i + '</span>\u2014'; dot.classList.remove('answered'); }
-    }
-    document.getElementById('trackerTotal').textContent = total;
-    document.getElementById('trackerCount').textContent = count;
-    document.getElementById('trackerBarFill').style.width = ((count / 6) * 100) + '%';
-    const stageEl = document.getElementById('trackerStageName');
-    if (count > 0) { stageEl.textContent = getStage(Math.round((total / count) * 6)).name; } else { stageEl.textContent = '\u2014'; }
-    const resultsEl = document.getElementById('results');
-    if (count === 6) {
-      resultsEl.classList.add('active');
-      const stage = getStage(total);
-      document.getElementById('resultScore').textContent = total;
-      document.getElementById('resultStageTitle').textContent = stage.name;
-      document.getElementById('resultStageDesc').textContent = stage.desc;
-      document.getElementById('resultCircle').style.background = stage.color;
-      const banner = document.getElementById('resultBanner');
-      banner.style.background = stage.color + '18'; banner.style.color = 'var(--navy)';
-      document.getElementById('stageMarker').style.left = ((total - 6) / 24) * 100 + '%';
-      document.querySelectorAll('#refTableBody tr').forEach(tr => {
-        tr.classList.remove('highlight-row');
-        if (parseInt(tr.dataset.stage) === stage.num) tr.classList.add('highlight-row');
-      });
-    } else { resultsEl.classList.remove('active'); }
-  }
-
-  function submitToGoogleSheets() {
-    const name = document.getElementById('custName').value.trim();
-    const company = document.getElementById('custCompany').value.trim();
-    const email = document.getElementById('custEmail').value.trim();
-
-    // Validate customer info
-    if (!name || !company || !email) {
-      alert('Please fill in your Name, Company and Email at the top of the form before submitting.');
-      document.getElementById('infoCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    // Validate email format
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-    // Validate all questions answered
-    let total = 0, count = 0;
-    for (let i = 1; i <= 6; i++) { if (answers[i]) { total += answers[i]; count++; } }
-    if (count < 6) { alert('Please answer all 6 questions before submitting.'); return; }
-
-    const stage = getStage(total);
-    const btn = document.getElementById('btnSubmit');
-    btn.innerHTML = '&#9203; Submitting...';
-    btn.disabled = true;
-
-    // Build form data
-    const formData = new FormData();
-    formData.append('Name', name);
-    formData.append('Company', company);
-    formData.append('Email', email);
-    formData.append('Q1', answers[1] || '');
-    formData.append('Q2', answers[2] || '');
-    formData.append('Q3', answers[3] || '');
-    formData.append('Q4', answers[4] || '');
-    formData.append('Q5', answers[5] || '');
-    formData.append('Q6', answers[6] || '');
-    formData.append('Total', total);
-    formData.append('Stage', stage.name);
-
-    fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-      btn.innerHTML = '&#10004; Submitted \u2014 Thank you!';
-      btn.classList.add('submitted');
-      btn.disabled = true;
-      document.querySelector('.submit-note').textContent = 'Your results have been recorded. See you at the seminar!';
-    })
-    .catch(error => {
-      console.error('Submission error:', error);
-      alert('There was a problem submitting your results. Please try again or contact the seminar organisers.');
-      btn.innerHTML = '&#128640; Submit My Results';
-      btn.disabled = false;
-    });
-  }
-
-  function downloadPDF() {
-    const btn = document.getElementById('btnPdf');
-    const origText = btn.innerHTML;
-    btn.innerHTML = 'Generating\u2026'; btn.disabled = true;
-    const tracker = document.getElementById('tracker');
-    tracker.style.display = 'none';
-    const container = document.getElementById('mainContainer');
-    const origMR = container.style.marginRight; const origMW = container.style.maxWidth;
-    container.style.marginRight = 'auto'; container.style.maxWidth = '780px';
-    const wrapper = document.createElement('div');
-    wrapper.style.background = '#ffffff'; wrapper.style.width = '780px';
-    wrapper.appendChild(document.querySelector('.header').cloneNode(true));
-    const cc = container.cloneNode(true);
-    cc.style.marginRight = 'auto'; cc.style.maxWidth = '780px'; cc.style.paddingTop = '30px';
-    const ro = document.getElementById('results');
-    if (ro.classList.contains('active')) {
-      const rc = cc.querySelector('.results');
-      if (rc) { rc.classList.add('active'); rc.style.opacity = '1';
-        const rcc = rc.querySelector('.results-content'); if (rcc) rcc.style.display = 'block';
-        const rl = rc.querySelector('.results-locked'); if (rl) rl.style.display = 'none';
-        const ss = rc.querySelector('.submit-section'); if (ss) ss.style.display = 'none';
-      }
-    }
-    wrapper.appendChild(cc);
-    document.body.appendChild(wrapper);
-    html2pdf().set({
-      margin: [8,8,8,8], filename: 'AI_Readiness_Self_Assessment.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, scrollY: 0, width: 780 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    }).from(wrapper).save().then(function() {
-      document.body.removeChild(wrapper); tracker.style.display = '';
-      container.style.marginRight = origMR; container.style.maxWidth = origMW;
-      btn.innerHTML = origText; btn.disabled = false;
-    }).catch(function() {
-      document.body.removeChild(wrapper); tracker.style.display = '';
-      container.style.marginRight = origMR; container.style.maxWidth = origMW;
-      btn.innerHTML = origText; btn.disabled = false;
-    });
-  }
-
-  function resetAll() {
-    for (let key in answers) delete answers[key];
-    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-    document.querySelectorAll('#refTableBody tr').forEach(tr => tr.classList.remove('highlight-row'));
-    document.getElementById('custName').value = '';
-    document.getElementById('custCompany').value = '';
-    document.getElementById('custEmail').value = '';
-    const btn = document.getElementById('btnSubmit');
-    btn.innerHTML = '&#128640; Submit My Results';
-    btn.classList.remove('submitted');
-    btn.disabled = false;
-    document.querySelector('.submit-note').textContent = 'Your responses will be shared with the seminar organisers to tailor the session to your needs.';
-    updateTracker();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbymTHaBAJob5COALwppnQqSzqX7Ofk7iTOllDFdjL2sWaWgRm6wgS8rCzDxEOFpVxR1/exec';
+const answers={};const leaderAnswers={};
+const stages=[
+  {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
+  {min:10,max:14,num:2,name:"Stage 2 \u2014 Experimenting",desc:"Individuals are using AI tools on their own initiative. No coordination, governance or strategy in place.",color:"var(--s2)"},
+  {min:15,max:19,num:3,name:"Stage 3 \u2014 Organising",desc:"Leadership is engaged. Governance is being built. First use cases are live.",color:"var(--s3)"},
+  {min:20,max:24,num:4,name:"Stage 4 \u2014 Scaling",desc:"AI is embedded in key functions with measurable ROI. A roadmap and board visibility are in place.",color:"var(--s4)"},
+  {min:25,max:30,num:5,name:"Stage 5 \u2014 Leading",desc:"AI is core to your competitive strategy. You are building advantage, not just efficiency.",color:"var(--s5)"}
+];
+const leaderStages=[
+  {min:4,max:8,name:"Observer",desc:"You are aware of AI but have not yet made it part of your personal workflow."},
+  {min:9,max:12,name:"User",desc:"You use AI for tasks but have not yet elevated it to a strategic thinking tool."},
+  {min:13,max:16,name:"Practitioner",desc:"AI is becoming a regular part of how you think and work. You are building the habit."},
+  {min:17,max:20,name:"AI-Driven Leader",desc:"You use AI as a genuine thinking partner for strategic decisions. You are leading by example."}
+];
+function getStage(s){for(const st of stages)if(s>=st.min&&s<=st.max)return st;return stages[0]}
+function getLeaderStage(s){for(const st of leaderStages)if(s>=st.min&&s<=st.max)return st;return leaderStages[0]}
+(function(){
+  const p1=document.getElementById('p1dots');for(let i=1;i<=6;i++)p1.innerHTML+='<div class="tracker-dot" id="dot-'+i+'">'+i+'</div>';
+  const ld=document.getElementById('ldots');for(let i=1;i<=4;i++)ld.innerHTML+='<div class="tracker-dot" id="ldot-'+i+'">'+i+'</div>';
+})();
+function selectOption(q,score){
+  const card=document.getElementById('q'+q);card.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  card.querySelectorAll('.option')[score-1].classList.add('selected');answers[q]=score;updateTracker();
+  setTimeout(()=>{for(let i=1;i<=6;i++){if(!answers[i]){document.getElementById('q'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('results').scrollIntoView({behavior:'smooth',block:'center'})},350);
+}
+function selectLeader(q,score){
+  const card=document.getElementById('l'+q);card.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  card.querySelectorAll('.option')[score-1].classList.add('selected');leaderAnswers[q]=score;updateTracker();
+  setTimeout(()=>{for(let i=1;i<=4;i++){if(!leaderAnswers[i]){document.getElementById('l'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('leaderResults').scrollIntoView({behavior:'smooth',block:'center'})},350);
+}
+function updateTracker(){
+  let t=0,c=0;
+  for(let i=1;i<=6;i++){const d=document.getElementById('dot-'+i);if(answers[i]){d.textContent=answers[i];d.classList.add('answered');t+=answers[i];c++}else{d.textContent=i;d.classList.remove('answered')}}
+  document.getElementById('p1total').textContent=t;
+  const r=document.getElementById('results');
+  if(c===6){r.classList.add('active');const st=getStage(t);
+    document.getElementById('resultScore').textContent=t;document.getElementById('resultStageTitle').textContent=st.name;document.getElementById('resultStageDesc').textContent=st.desc;
+    document.getElementById('resultCircle').style.background=st.color;
+    const b=document.getElementById('resultBanner');b.style.background=st.color+'18';b.style.color='var(--ubt-blue)';
+    document.getElementById('stageMarker').style.left=((t-6)/24)*100+'%';
+    document.querySelectorAll('#refTableBody tr').forEach(tr=>{tr.classList.remove('highlight-row');if(parseInt(tr.dataset.stage)===st.num)tr.classList.add('highlight-row')});
+  }else{r.classList.remove('active')}
+  let lt=0,lc=0;
+  for(let i=1;i<=4;i++){const d=document.getElementById('ldot-'+i);if(leaderAnswers[i]){d.textContent=leaderAnswers[i];d.classList.add('leader-answered');lt+=leaderAnswers[i];lc++}else{d.textContent=i;d.classList.remove('leader-answered')}}
+  document.getElementById('ltotal').textContent=lt;
+  const lr=document.getElementById('leaderResults');
+  if(lc===4){lr.classList.add('active');const ls=getLeaderStage(lt);
+    document.getElementById('leaderScore').textContent=lt;document.getElementById('leaderTitle').textContent=ls.name;document.getElementById('leaderDesc').textContent=ls.desc;
+  }else{lr.classList.remove('active')}
+}
+function submitToGoogleSheets(){
+  const name=document.getElementById('custName').value.trim();const company=document.getElementById('custCompany').value.trim();const email=document.getElementById('custEmail').value.trim();
+  if(!name||!company||!email){alert('Please fill in your Name, Company and Email at the top of the form.');document.getElementById('infoCard').scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email address.');return}
+  let t=0,c=0;for(let i=1;i<=6;i++){if(answers[i]){t+=answers[i];c++}}
+  if(c<6){alert('Please answer all 6 questions in Part 1.');return}
+  const stage=getStage(t);let lt=0;for(let i=1;i<=4;i++){if(leaderAnswers[i])lt+=leaderAnswers[i]}
+  const btn=document.getElementById('btnSubmit');btn.innerHTML='&#9203; Submitting...';btn.disabled=true;
+  const fd=new FormData();fd.append('Name',name);fd.append('Company',company);fd.append('Email',email);
+  for(let i=1;i<=6;i++)fd.append('Q'+i,answers[i]||'');
+  fd.append('Total',t);fd.append('Stage',stage.name);
+  for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);fd.append('Q'+i,el?el.value.trim():'')}
+  for(let i=1;i<=4;i++)fd.append('L'+i,leaderAnswers[i]||'');
+  const l5=document.getElementById('input_l5');fd.append('L5',l5?l5.value.trim():'');fd.append('LeaderTotal',lt);
+  fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:fd})
+  .then(r=>r.text()).then(()=>{btn.innerHTML='&#10004; Submitted \u2014 Thank you!';btn.classList.add('submitted');btn.disabled=true;document.querySelector('.submit-note').textContent='Your results have been recorded. See you at the AI Networking session!'})
+  .catch(()=>{alert('There was a problem submitting. Please try again.');btn.innerHTML='&#128640; Submit My Results';btn.disabled=false});
+}
+function downloadPDF(){
+  const btn=document.getElementById('btnPdf');const orig=btn.innerHTML;btn.innerHTML='\u2026';btn.disabled=true;
+  const tracker=document.getElementById('tracker');tracker.style.display='none';
+  const container=document.getElementById('mainContainer');
+  const wrapper=document.createElement('div');wrapper.style.background='#fff';wrapper.style.width='780px';
+  wrapper.appendChild(document.querySelector('.header').cloneNode(true));
+  const cc=container.cloneNode(true);cc.style.maxWidth='780px';cc.style.paddingTop='20px';cc.style.paddingBottom='40px';
+  const ss=cc.querySelector('.submit-section');if(ss)ss.style.display='none';
+  const ro=document.getElementById('results');if(ro.classList.contains('active')){const rc=cc.querySelector('.results');if(rc){rc.classList.add('active');rc.style.opacity='1';const rcc=rc.querySelector('.results-content');if(rcc)rcc.style.display='block';const rl=rc.querySelector('.results-locked');if(rl)rl.style.display='none'}}
+  const lr=document.getElementById('leaderResults');if(lr.classList.contains('active')){const lrc=cc.querySelector('.leader-results');if(lrc){lrc.classList.add('active');lrc.style.opacity='1';const lrcc=lrc.querySelector('.leader-results-content');if(lrcc)lrcc.style.display='block';const lrl=lrc.querySelector('.leader-results-locked');if(lrl)lrl.style.display='none'}}
+  wrapper.appendChild(cc);document.body.appendChild(wrapper);
+  html2pdf().set({margin:[8,8,8,8],filename:'UBT_AI_Readiness_Assessment.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all','css','legacy']}}).from(wrapper).save().then(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false}).catch(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false});
+}
+function resetAll(){
+  for(let k in answers)delete answers[k];for(let k in leaderAnswers)delete leaderAnswers[k];
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  document.querySelectorAll('#refTableBody tr').forEach(tr=>tr.classList.remove('highlight-row'));
+  document.getElementById('custName').value='';document.getElementById('custCompany').value='';document.getElementById('custEmail').value='';
+  for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);if(el)el.value=''}
+  const l5=document.getElementById('input_l5');if(l5)l5.value='';
+  const btn=document.getElementById('btnSubmit');btn.innerHTML='&#128640; Submit My Results';btn.classList.remove('submitted');btn.disabled=false;
+  document.querySelector('.submit-note').textContent='Your responses will be shared with the UBT team to tailor the session to your needs.';
+  updateTracker();window.scrollTo({top:0,behavior:'smooth'});
+}
 </script>
 </body>
 </html>
