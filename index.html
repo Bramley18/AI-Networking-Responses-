@@ -67,11 +67,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .text-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .text-input::placeholder{color:var(--g300)}
 
-/* RESULTS - hidden until submit */
-.results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;display:none;text-align:left}
-.results.active{display:block;animation:revealResult .6s ease forwards}
+/* COMBINED RESULTS - hidden until submit */
+.all-results{display:none;margin-bottom:32px}
+.all-results.active{display:block;animation:revealResult .6s ease forwards}
 @keyframes revealResult{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.results h2{font-size:1.2rem;text-align:center;margin-bottom:24px;color:var(--ubt-blue)}
+.result-section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:24px;text-align:left}
+.result-section h2{font-size:1.2rem;text-align:center;margin-bottom:24px;color:var(--ubt-blue)}
+.result-section-label{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:6px}
 .result-score-circle{width:110px;height:110px;border-radius:50%;margin:0 auto 10px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .result-score-circle .score-value{font-size:2.6rem;font-weight:800;color:var(--white);line-height:1}
 .result-score-circle .score-of{font-size:0.75rem;color:rgba(255,255,255,0.8);font-weight:500}
@@ -84,8 +86,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .stage-bar-labels{display:flex;font-size:0.65rem;color:var(--g500);font-weight:500}
 .stage-bar-labels span{text-align:center}
 .stage-bar-marker{position:absolute;top:-8px;width:3px;height:30px;background:var(--ubt-blue);border-radius:2px;transition:left .5s;z-index:2}
-.leader-results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;display:none}
-.leader-results.active{display:block;animation:revealResult .6s ease forwards}
 .ref-table{margin-top:28px}
 .ref-table h3{font-size:0.95rem;margin-bottom:14px;color:var(--ubt-blue)}
 .ref-table table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:10px;border:1px solid var(--g200)}
@@ -95,6 +95,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .ref-table tr:nth-child(even) td{background:var(--g100)}
 .ref-table .stage-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
 .ref-table .highlight-row td{background:var(--accent-glow) !important;font-weight:600;color:var(--ubt-blue)}
+.results-divider{height:2px;background:linear-gradient(to right,transparent,var(--g300),transparent);margin:8px 0;border:none}
 
 /* PROGRESS INDICATOR CARDS */
 .progress-card{background:var(--white);border-radius:var(--radius);padding:24px 30px;margin-bottom:32px;text-align:center;box-shadow:var(--shadow);border:2px solid var(--ubt-red);position:relative}
@@ -145,6 +146,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .tracker{gap:10px;padding:10px 14px}.tracker-dot{width:24px;height:24px;font-size:.6rem}
   .section-divider{padding:24px 20px}.section-divider h2{font-size:1.1rem}
 }
+
+/* PDF Download Banner */
+.pdf-download-banner{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1e2a5a 0%,#2a3a72 100%);border-radius:var(--radius);padding:24px 30px;box-shadow:var(--shadow);margin-bottom:28px}
+.pdf-banner-icon{font-size:2.2rem;flex-shrink:0}
+.pdf-banner-content h3{color:#fff;font-size:1.05rem;font-weight:700;margin-bottom:2px}
+.pdf-banner-content p{color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:300;margin:0}
+.btn-pdf-banner{flex-shrink:0;padding:12px 24px;border:none;border-radius:10px;background:#e31837;color:#fff;font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all .3s;white-space:nowrap}
+.btn-pdf-banner:hover{background:#c71530;transform:translateY(-1px);box-shadow:0 4px 14px rgba(227,24,55,0.3)}
+.btn-pdf-banner:disabled{opacity:.7;cursor:wait}
+@media(max-width:700px){
+  .pdf-download-banner{flex-direction:column;text-align:center}
+  .btn-pdf-banner{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -245,28 +260,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="option" onclick="selectOption(6,5)"><div class="score-badge">5</div><div class="option-text">Fully governed — structured and unstructured data is clean, connected and AI-ready</div><div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
 </div>
 </div>
-
-  <!-- RESULTS - hidden until submit -->
-  <div class="results" id="results">
-      <h2>Your AI Maturity Result</h2>
-      <div class="result-score-circle" id="resultCircle"><div class="score-value" id="resultScore">0</div><div class="score-of">out of 30</div></div>
-      <div class="result-stage-banner" id="resultBanner"><div class="stage-title" id="resultStageTitle">&mdash;</div><div class="stage-desc" id="resultStageDesc">&mdash;</div></div>
-      <div class="stage-bar-container"><div style="position:relative"><div class="stage-bar">
-        <div class="stage-bar-segment" style="width:16.67%;background:var(--s1)"></div>
-        <div class="stage-bar-segment" style="width:20.83%;background:var(--s2)"></div>
-        <div class="stage-bar-segment" style="width:20.83%;background:var(--s3)"></div>
-        <div class="stage-bar-segment" style="width:20.83%;background:var(--s4)"></div>
-        <div class="stage-bar-segment" style="width:20.84%;background:var(--s5)"></div>
-      </div><div class="stage-bar-marker" id="stageMarker" style="left:0%"></div></div>
-      <div class="stage-bar-labels"><span style="width:16.67%">6&ndash;9</span><span style="width:20.83%">10&ndash;14</span><span style="width:20.83%">15&ndash;19</span><span style="width:20.83%">20&ndash;24</span><span style="width:20.84%">25&ndash;30</span></div></div>
-      <div class="ref-table"><h3>AI Maturity Stage Reference</h3><table><thead><tr><th>Score</th><th>Stage</th><th>Description</th></tr></thead><tbody id="refTableBody">
-        <tr data-stage="1"><td>6&ndash;9</td><td><span class="stage-dot" style="background:var(--s1)"></span>Stage 1 &mdash; Unaware</td><td>AI is happening around you but not intentionally inside your business.</td></tr>
-        <tr data-stage="2"><td>10&ndash;14</td><td><span class="stage-dot" style="background:var(--s2)"></span>Stage 2 &mdash; Experimenting</td><td>Individuals using AI on their own initiative. No coordination or governance.</td></tr>
-        <tr data-stage="3"><td>15&ndash;19</td><td><span class="stage-dot" style="background:var(--s3)"></span>Stage 3 &mdash; Organising</td><td>Leadership is engaged. Governance is being built. First use cases are live.</td></tr>
-        <tr data-stage="4"><td>20&ndash;24</td><td><span class="stage-dot" style="background:var(--s4)"></span>Stage 4 &mdash; Scaling</td><td>AI embedded in key functions with measurable ROI. Board visibility in place.</td></tr>
-        <tr data-stage="5"><td>25&ndash;30</td><td><span class="stage-dot" style="background:var(--s5)"></span>Stage 5 &mdash; Leading</td><td>AI is core to your competitive strategy. Building advantage, not just efficiency.</td></tr>
-      </tbody></table></div>
-  </div>
 
   <!-- PROGRESS INDICATOR: After Part 1 -->
   <div class="progress-card" id="progressAfterP1">
@@ -378,14 +371,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <textarea class="text-input" id="input_l5" placeholder="Type your answer here…" rows="4"></textarea>
 </div>
 
-  <!-- LEADER RESULTS - hidden until submit -->
-  <div class="leader-results" id="leaderResults">
-    <div class="leader-results-content">
-      <h2>Your AI Leadership Score</h2>
-      <div class="result-score-circle" id="leaderCircle" style="background:var(--ubt-red)"><div class="score-value" id="leaderScore">0</div><div class="score-of">out of 20</div></div>
-      <div class="result-stage-banner" id="leaderBanner" style="background:rgba(227,24,55,0.08);color:var(--ubt-blue)"><div class="stage-title" id="leaderTitle">&mdash;</div><div class="stage-desc" id="leaderDesc">&mdash;</div></div>
-    </div>
-  </div>
 
   <div class="submit-section" id="submitSection">
     <h2>Ready to Submit?</h2>
@@ -393,6 +378,53 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <button class="btn-submit" id="btnSubmit" onclick="submitToGoogleSheets()">&#128640; Submit &amp; Review Your Results</button>
     <p class="submit-note">Your responses will be shared with the UBT team to tailor the session to your needs.</p>
   </div>
+
+  <!-- COMBINED RESULTS - hidden until submit, shown at the bottom -->
+  <div class="all-results" id="allResults">
+    <div class="section-divider" style="margin-top:0"><div class="part-label">Your Results</div><h2>AI Readiness Assessment Results</h2><p>Here are your personalised results based on your responses across all three parts.</p></div>
+
+    <div class="pdf-download-banner" id="pdfDownloadBanner">
+      <div class="pdf-banner-icon">📄</div>
+      <div class="pdf-banner-content">
+        <h3>Download Your Board-Ready Report</h3>
+        <p>Get a professionally formatted PDF to share with your board or leadership team.</p>
+      </div>
+      <button class="btn-pdf-banner" id="btnPdfBanner" onclick="downloadPDF()">⬇ Download PDF Report</button>
+    </div>
+
+
+    <div class="result-section">
+      <div class="result-section-label" style="color:var(--accent)">Part 1</div>
+      <h2>AI Maturity Result</h2>
+      <div class="result-score-circle" id="resultCircle"><div class="score-value" id="resultScore">0</div><div class="score-of">out of 30</div></div>
+      <div class="result-stage-banner" id="resultBanner"><div class="stage-title" id="resultStageTitle">&mdash;</div><div class="stage-desc" id="resultStageDesc">&mdash;</div></div>
+      <div class="stage-bar-container"><div style="position:relative"><div class="stage-bar">
+        <div class="stage-bar-segment" style="width:16.67%;background:var(--s1)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s2)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s3)"></div>
+        <div class="stage-bar-segment" style="width:20.83%;background:var(--s4)"></div>
+        <div class="stage-bar-segment" style="width:20.84%;background:var(--s5)"></div>
+      </div><div class="stage-bar-marker" id="stageMarker" style="left:0%"></div></div>
+      <div class="stage-bar-labels"><span style="width:16.67%">6&ndash;9</span><span style="width:20.83%">10&ndash;14</span><span style="width:20.83%">15&ndash;19</span><span style="width:20.83%">20&ndash;24</span><span style="width:20.84%">25&ndash;30</span></div></div>
+      <div class="ref-table"><h3>AI Maturity Stage Reference</h3><table><thead><tr><th>Score</th><th>Stage</th><th>Description</th></tr></thead><tbody id="refTableBody">
+        <tr data-stage="1"><td>6&ndash;9</td><td><span class="stage-dot" style="background:var(--s1)"></span>Stage 1 &mdash; Unaware</td><td>AI is happening around you but not intentionally inside your business.</td></tr>
+        <tr data-stage="2"><td>10&ndash;14</td><td><span class="stage-dot" style="background:var(--s2)"></span>Stage 2 &mdash; Experimenting</td><td>Individuals using AI on their own initiative. No coordination or governance.</td></tr>
+        <tr data-stage="3"><td>15&ndash;19</td><td><span class="stage-dot" style="background:var(--s3)"></span>Stage 3 &mdash; Organising</td><td>Leadership is engaged. Governance is being built. First use cases are live.</td></tr>
+        <tr data-stage="4"><td>20&ndash;24</td><td><span class="stage-dot" style="background:var(--s4)"></span>Stage 4 &mdash; Scaling</td><td>AI embedded in key functions with measurable ROI. Board visibility in place.</td></tr>
+        <tr data-stage="5"><td>25&ndash;30</td><td><span class="stage-dot" style="background:var(--s5)"></span>Stage 5 &mdash; Leading</td><td>AI is core to your competitive strategy. Building advantage, not just efficiency.</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <hr class="results-divider">
+
+    <div class="result-section">
+      <div class="result-section-label" style="color:var(--ubt-red)">Part 3</div>
+      <h2>AI Leadership Score</h2>
+      <div class="result-score-circle" id="leaderCircle" style="background:var(--ubt-red)"><div class="score-value" id="leaderScore">0</div><div class="score-of">out of 20</div></div>
+      <div class="result-stage-banner" id="leaderBanner" style="background:rgba(227,24,55,0.08);color:var(--ubt-blue)"><div class="stage-title" id="leaderTitle">&mdash;</div><div class="stage-desc" id="leaderDesc">&mdash;</div></div>
+    </div>
+  </div>
+
   <div class="footer">Prepared for the AI Networking Session &bull; UBT &mdash; Creating Possibilities</div>
 </div>
 <div class="tracker" id="tracker">
@@ -406,7 +438,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 <script>
-const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbymTHaBAJob5COALwppnQqSzqX7Ofk7iTOllDFdjL2sWaWgRm6wgS8rCzDxEOFpVxR1/exec';
+const GOOGLE_SCRIPT_URL='YOUR_GOOGLE_SCRIPT_URL_HERE';
 const answers={};const leaderAnswers={};
 const stages=[
   {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
@@ -455,21 +487,24 @@ function revealResults(){
   const b=document.getElementById('resultBanner');b.style.background=st.color+'18';b.style.color='var(--ubt-blue)';
   document.getElementById('stageMarker').style.left=((t-6)/24)*100+'%';
   document.querySelectorAll('#refTableBody tr').forEach(tr=>{tr.classList.remove('highlight-row');if(parseInt(tr.dataset.stage)===st.num)tr.classList.add('highlight-row')});
-  document.getElementById('results').classList.add('active');
   let lt=0;for(let i=1;i<=4;i++)if(leaderAnswers[i])lt+=leaderAnswers[i];
-  if(lt>0){const ls=getLeaderStage(lt);
-    document.getElementById('leaderScore').textContent=lt;
-    document.getElementById('leaderTitle').textContent=ls.name;
-    document.getElementById('leaderDesc').textContent=ls.desc;
-    document.getElementById('leaderResults').classList.add('active');
-  }
+  const ls=getLeaderStage(lt);
+  document.getElementById('leaderScore').textContent=lt;
+  document.getElementById('leaderTitle').textContent=ls.name;
+  document.getElementById('leaderDesc').textContent=ls.desc;
+  document.getElementById('allResults').classList.add('active');
 }
 function submitToGoogleSheets(){
   const name=document.getElementById('custName').value.trim();const company=document.getElementById('custCompany').value.trim();const email=document.getElementById('custEmail').value.trim();
   if(!name||!company||!email){alert('Please fill in your Name, Company and Email at the top of the form.');document.getElementById('infoCard').scrollIntoView({behavior:'smooth',block:'center'});return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email address.');return}
   let t=0,c=0;for(let i=1;i<=6;i++){if(answers[i]){t+=answers[i];c++}}
-  if(c<6){alert('Please answer all 6 questions in Part 1.');return}
+  if(c<6){alert('Please answer all 6 questions in Part 1.');for(let i=1;i<=6;i++){if(!answers[i]){document.getElementById('q'+i).scrollIntoView({behavior:'smooth',block:'center'});break}}return}
+  for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);if(!el||!el.value.trim()){alert('Please answer all questions in Part 2 (Q7\u2013Q12).');el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();return}}
+  let lc=0;for(let i=1;i<=4;i++){if(leaderAnswers[i])lc++}
+  if(lc<4){alert('Please answer all scored questions in Part 3 (L1\u2013L4).');for(let i=1;i<=4;i++){if(!leaderAnswers[i]){document.getElementById('l'+i).scrollIntoView({behavior:'smooth',block:'center'});break}}return}
+  const l5el=document.getElementById('input_l5');
+  if(!l5el||!l5el.value.trim()){alert('Please answer question L5 in Part 3.');l5el.scrollIntoView({behavior:'smooth',block:'center'});l5el.focus();return}
   const stage=getStage(t);let lt=0;for(let i=1;i<=4;i++){if(leaderAnswers[i])lt+=leaderAnswers[i]}
   const btn=document.getElementById('btnSubmit');btn.innerHTML='&#9203; Submitting...';btn.disabled=true;
   const fd=new FormData();fd.append('Name',name);fd.append('Company',company);fd.append('Email',email);
@@ -477,30 +512,248 @@ function submitToGoogleSheets(){
   fd.append('Total',t);fd.append('Stage',stage.name);
   for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);fd.append('Q'+i,el?el.value.trim():'')}
   for(let i=1;i<=4;i++)fd.append('L'+i,leaderAnswers[i]||'');
-  const l5=document.getElementById('input_l5');fd.append('L5',l5?l5.value.trim():'');fd.append('LeaderTotal',lt);
+  fd.append('L5',l5el?l5el.value.trim():'');fd.append('LeaderTotal',lt);
   fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:fd})
   .then(r=>r.text()).then(()=>{
     btn.innerHTML='&#10004; Submitted \u2014 Scroll down to see your results!';btn.classList.add('submitted');btn.disabled=true;
     document.querySelector('.submit-note').textContent='Your results have been recorded. See you at the AI Networking session!';
     revealResults();
-    setTimeout(()=>{document.getElementById('results').scrollIntoView({behavior:'smooth',block:'center'})},400);
+    setTimeout(()=>{document.getElementById('allResults').scrollIntoView({behavior:'smooth',block:'start'})},400);
   })
   .catch(()=>{alert('There was a problem submitting. Please try again.');btn.innerHTML='&#128640; Submit &amp; Review Your Results';btn.disabled=false});
 }
 function downloadPDF(){
-  const btn=document.getElementById('btnPdf');const orig=btn.innerHTML;btn.innerHTML='\u2026';btn.disabled=true;
-  const tracker=document.getElementById('tracker');tracker.style.display='none';
-  const container=document.getElementById('mainContainer');
-  const wrapper=document.createElement('div');wrapper.style.background='#fff';wrapper.style.width='780px';
-  wrapper.appendChild(document.querySelector('.header').cloneNode(true));
-  const cc=container.cloneNode(true);cc.style.maxWidth='780px';cc.style.paddingTop='20px';cc.style.paddingBottom='40px';
-  const ss=cc.querySelector('.submit-section');if(ss)ss.style.display='none';
-  const pcs=cc.querySelectorAll('.progress-card');pcs.forEach(pc=>pc.style.display='none');
-  const ro=document.getElementById('results');if(ro.classList.contains('active')){const rc=cc.querySelector('.results');if(rc){rc.style.display='block';rc.style.opacity='1'}}
-  const lr=document.getElementById('leaderResults');if(lr.classList.contains('active')){const lrc=cc.querySelector('.leader-results');if(lrc){lrc.style.display='block';lrc.style.opacity='1'}}
-  wrapper.appendChild(cc);document.body.appendChild(wrapper);
-  html2pdf().set({margin:[8,8,8,8],filename:'UBT_AI_Readiness_Assessment.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all','css','legacy']}}).from(wrapper).save().then(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false}).catch(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false});
+  var btnTracker=document.getElementById('btnPdf');var btnBanner=document.getElementById('btnPdfBanner');
+  var origTracker=btnTracker?btnTracker.innerHTML:'';var origBanner=btnBanner?btnBanner.innerHTML:'';
+  if(btnTracker){btnTracker.innerHTML='\u2026';btnTracker.disabled=true}
+  if(btnBanner){btnBanner.innerHTML='\u2026 Generating PDF';btnBanner.disabled=true}
+  var tracker=document.getElementById('tracker');tracker.style.display='none';
+
+  var custName=(document.getElementById('custName').value||'').trim();
+  var custCompany=(document.getElementById('custCompany').value||'').trim();
+  var custEmail=(document.getElementById('custEmail').value||'').trim();
+  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+  function scoreColor(s){return{1:'#ef4444',2:'#f59e0b',3:'#eab308',4:'#22c55e',5:'#2e5cb8'}[s]||'#8896a7'}
+  function hexToRgba(hex,a){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return'rgba('+r+','+g+','+b+','+a+')'}
+  var varToHex={'var(--s1)':'#ef4444','var(--s2)':'#f59e0b','var(--s3)':'#eab308','var(--s4)':'#22c55e','var(--s5)':'#2e5cb8'};
+
+  /* Part 1 data */
+  var p1Data=[];var p1Total=0;
+  for(var i=1;i<=6;i++){
+    var card=document.getElementById('q'+i);
+    var qText=card?card.querySelector('.q-text').textContent:'';
+    var qCat=card?card.querySelector('.q-category').textContent:'';
+    var score=answers[i]||0;
+    var selEl=card?card.querySelector('.option.selected .option-text'):null;
+    var selText=selEl?selEl.textContent:'Not answered';
+    p1Total+=score;
+    p1Data.push({num:'Q'+i,cat:qCat,text:qText,score:score,answer:selText});
+  }
+  var p1Stage=getStage(p1Total);
+  var p1StageColor=varToHex[p1Stage.color]||'#2e5cb8';
+
+  /* Part 2 data */
+  var p2Data=[];
+  for(var i=7;i<=12;i++){
+    var card=document.getElementById('q'+i);
+    var qText=card?card.querySelector('.q-text').textContent:'';
+    var qCat=card?card.querySelector('.q-category').textContent:'';
+    var ta=document.getElementById('input_q'+i);
+    var ans=ta?ta.value.trim():'';
+    p2Data.push({num:'Q'+i,cat:qCat,text:qText,answer:ans});
+  }
+
+  /* Part 3 data */
+  var p3Data=[];var lTotal=0;
+  for(var i=1;i<=4;i++){
+    var card=document.getElementById('l'+i);
+    var qText=card?card.querySelector('.q-text').textContent:'';
+    var qCat=card?card.querySelector('.q-category').textContent:'';
+    var score=leaderAnswers[i]||0;
+    var selEl=card?card.querySelector('.option.selected .option-text'):null;
+    var selText=selEl?selEl.textContent:'Not answered';
+    lTotal+=score;
+    p3Data.push({num:'L'+i,cat:qCat,text:qText,score:score,answer:selText});
+  }
+  var lStage=getLeaderStage(lTotal);
+  var l5Card=document.getElementById('l5');
+  var l5Text=l5Card?l5Card.querySelector('.q-text').textContent:'';
+  var l5Ta=document.getElementById('input_l5');
+  var l5Ans=l5Ta?l5Ta.value.trim():'';
+
+  /* --- Helper: section header banner --- */
+  function sectionHeader(partLabel,title,sub){
+    return '<div style="background:#1e2a5a;color:#fff;border-radius:12px;padding:22px 28px;text-align:center;margin-bottom:24px;">'
+      +'<div style="font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:4px;">'+escHtml(partLabel)+'</div>'
+      +'<div style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">'+escHtml(title)+'</div>'
+      +'<div style="font-size:0.8rem;font-weight:300;opacity:0.7;">'+escHtml(sub)+'</div>'
+      +'</div>';
+  }
+
+  /* --- Helper: scored question card --- */
+  function scoredCard(num,cat,text,score,answer,badgeColor){
+    var sc=scoreColor(score);
+    return '<div style="border:1px solid #e8edf4;border-radius:10px;padding:18px 20px;margin-bottom:14px;page-break-inside:avoid;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:'+(badgeColor||'#2e5cb8')+';color:#fff;font-size:0.75rem;font-weight:700;">'+escHtml(num)+'</span>'
+      +'<span style="font-size:0.7rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.8px;">'+escHtml(cat)+'</span>'
+      +'</div>'
+      +'<div style="font-size:0.92rem;font-weight:600;color:#1e2a5a;margin-bottom:10px;">'+escHtml(text)+'</div>'
+      +'<div style="display:flex;align-items:center;gap:10px;background:'+hexToRgba(sc,0.07)+';border-left:3px solid '+sc+';border-radius:8px;padding:10px 14px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:'+sc+';color:#fff;font-size:0.8rem;font-weight:700;flex-shrink:0;">'+score+'</span>'
+      +'<span style="font-size:0.85rem;color:#1e2a5a;">'+escHtml(answer)+'</span>'
+      +'</div></div>';
+  }
+
+  /* --- Helper: open question card --- */
+  function openCard(num,cat,text,answer,borderColor){
+    var bc=borderColor||'#2e5cb8';
+    return '<div style="border:1px solid #e8edf4;border-radius:10px;padding:18px 20px;margin-bottom:14px;page-break-inside:avoid;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:'+bc+';color:#fff;font-size:0.75rem;font-weight:700;">'+escHtml(num)+'</span>'
+      +'<span style="font-size:0.7rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.8px;">'+escHtml(cat)+'</span>'
+      +'</div>'
+      +'<div style="font-size:0.92rem;font-weight:600;color:#1e2a5a;margin-bottom:10px;">'+escHtml(text)+'</div>'
+      +'<div style="background:#f7f9fc;border-left:3px solid '+bc+';border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#4a5568;white-space:pre-wrap;line-height:1.6;">'+escHtml(answer||'No response provided.')+'</div>'
+      +'</div>';
+  }
+
+  /* ===== BUILD HTML ===== */
+  var html='';
+
+  /* --- COVER PAGE --- */
+  html+='<div style="min-height:1050px;background:#1e2a5a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;page-break-after:always;padding:60px 40px;text-align:center;">';
+  html+='<div style="position:absolute;top:-120px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(46,92,184,0.2) 0%,transparent 70%);border-radius:50%;"></div>';
+  html+='<div style="position:absolute;bottom:-100px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(227,24,55,0.15) 0%,transparent 70%);border-radius:50%;"></div>';
+  html+='<div style="position:relative;z-index:1;margin-bottom:16px;">';
+  html+='<svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">';
+  var rots=[0,45,90,135,180,225,270,315];
+  for(var r=0;r<rots.length;r++){html+='<polygon points="43,16 57,16 57,30 50,38 43,30" fill="#e31837" transform="rotate('+rots[r]+',50,50)"/>';}
+  html+='</svg></div>';
+  html+='<div style="position:relative;z-index:1;font-size:3rem;font-weight:800;letter-spacing:3px;margin-bottom:2px;">UBT</div>';
+  html+='<div style="position:relative;z-index:1;font-size:0.7rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:40px;">CREATING POSSIBILITIES</div>';
+  html+='<div style="position:relative;z-index:1;width:60px;height:3px;background:#e31837;margin:0 auto 40px;border-radius:2px;"></div>';
+  html+='<div style="position:relative;z-index:1;font-size:2.2rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.3px;">AI Readiness Self-Assessment</div>';
+  html+='<div style="position:relative;z-index:1;font-size:1.2rem;font-weight:300;color:rgba(255,255,255,0.7);margin-bottom:50px;">Board Report</div>';
+  html+='<div style="position:relative;z-index:1;background:rgba(255,255,255,0.08);border-radius:12px;padding:28px 36px;max-width:380px;width:100%;">';
+  html+='<div style="font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">PREPARED FOR</div>';
+  html+='<div style="font-size:1.4rem;font-weight:700;margin-bottom:4px;">'+escHtml(custName)+'</div>';
+  html+='<div style="font-size:1rem;font-weight:400;color:rgba(255,255,255,0.8);margin-bottom:4px;">'+escHtml(custCompany)+'</div>';
+  html+='<div style="font-size:0.85rem;font-weight:300;color:rgba(255,255,255,0.5);">'+today+'</div>';
+  html+='</div>';
+  html+='<div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.35);z-index:1;">Confidential \u2014 '+escHtml(custCompany)+'</div>';
+  html+='</div>';
+
+  /* --- PART 1 --- */
+  html+='<div style="background:#fff;padding:30px 40px;">';
+  html+=sectionHeader('Part 1','AI Maturity Assessment','6 scored questions \u00b7 Maximum 30 points');
+  for(var i=0;i<p1Data.length;i++){
+    html+=scoredCard(p1Data[i].num,p1Data[i].cat,p1Data[i].text,p1Data[i].score,p1Data[i].answer,'#2e5cb8');
+  }
+  html+='<div style="border:2px solid '+p1StageColor+';border-radius:12px;background:'+hexToRgba(p1StageColor,0.05)+';padding:24px 28px;text-align:center;margin-top:20px;page-break-inside:avoid;">';
+  html+='<div style="font-size:2.2rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+' <span style="font-size:1rem;font-weight:400;color:#8896a7;">/ 30</span></div>';
+  html+='<div style="font-size:1.1rem;font-weight:700;color:#1e2a5a;margin-top:6px;">'+escHtml(p1Stage.name)+'</div>';
+  html+='<div style="font-size:0.85rem;color:#4a5568;margin-top:4px;max-width:500px;margin-left:auto;margin-right:auto;">'+escHtml(p1Stage.desc)+'</div>';
+  html+='</div></div>';
+
+  /* --- PART 2 --- */
+  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
+  html+=sectionHeader('Part 2','Open Reflection','6 open-ended questions');
+  for(var i=0;i<p2Data.length;i++){
+    html+=openCard(p2Data[i].num,p2Data[i].cat,p2Data[i].text,p2Data[i].answer,'#2e5cb8');
+  }
+  html+='</div>';
+
+  /* --- PART 3 --- */
+  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
+  html+=sectionHeader('Part 3','You as an AI-Driven Leader','Inspired by Geoff Woods\u2019 The AI-Driven Leader \u00b7 Scored separately');
+  for(var i=0;i<p3Data.length;i++){
+    html+=scoredCard(p3Data[i].num,p3Data[i].cat,p3Data[i].text,p3Data[i].score,p3Data[i].answer,'#e31837');
+  }
+  html+=openCard('L5','One Decision',l5Text,l5Ans,'#e31837');
+  html+='<div style="border:2px solid #e31837;border-radius:12px;background:rgba(227,24,55,0.05);padding:24px 28px;text-align:center;margin-top:20px;page-break-inside:avoid;">';
+  html+='<div style="font-size:2.2rem;font-weight:800;color:#e31837;">'+lTotal+' <span style="font-size:1rem;font-weight:400;color:#8896a7;">/ 20</span></div>';
+  html+='<div style="font-size:1.1rem;font-weight:700;color:#1e2a5a;margin-top:6px;">'+escHtml(lStage.name)+'</div>';
+  html+='<div style="font-size:0.85rem;color:#4a5568;margin-top:4px;max-width:500px;margin-left:auto;margin-right:auto;">'+escHtml(lStage.desc)+'</div>';
+  html+='</div></div>';
+
+  /* --- SUMMARY PAGE --- */
+  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
+  html+=sectionHeader('Summary','Results Overview','');
+  /* Two score boxes */
+  html+='<div style="display:flex;gap:20px;margin-bottom:24px;">';
+  html+='<div style="flex:1;border:2px solid '+p1StageColor+';border-radius:12px;padding:22px;text-align:center;page-break-inside:avoid;">';
+  html+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:8px;">AI Maturity</div>';
+  html+='<div style="font-size:2.4rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+'<span style="font-size:1rem;font-weight:400;color:#8896a7;"> / 30</span></div>';
+  html+='<div style="font-size:0.9rem;font-weight:600;color:#1e2a5a;margin-top:4px;">'+escHtml(p1Stage.name)+'</div>';
+  html+='</div>';
+  html+='<div style="flex:1;border:2px solid #e31837;border-radius:12px;padding:22px;text-align:center;page-break-inside:avoid;">';
+  html+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:8px;">AI Leadership</div>';
+  html+='<div style="font-size:2.4rem;font-weight:800;color:#e31837;">'+lTotal+'<span style="font-size:1rem;font-weight:400;color:#8896a7;"> / 20</span></div>';
+  html+='<div style="font-size:0.9rem;font-weight:600;color:#1e2a5a;margin-top:4px;">'+escHtml(lStage.name)+'</div>';
+  html+='</div></div>';
+
+  /* Reference table */
+  html+='<div style="border:1px solid #e8edf4;border-radius:12px;overflow:hidden;margin-bottom:24px;page-break-inside:avoid;">';
+  html+='<div style="background:#f7f9fc;padding:12px 18px;font-size:0.85rem;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">AI Maturity Stage Reference</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:0.8rem;">';
+  html+='<thead><tr style="background:#f7f9fc;"><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Score</th><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Stage</th><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Description</th></tr></thead><tbody>';
+  var refData=[
+    {range:'6 \u2013 9',name:'Stage 1 \u2014 Unaware',desc:'AI is happening around you but not intentionally inside your business.',color:'#ef4444',num:1},
+    {range:'10 \u2013 14',name:'Stage 2 \u2014 Experimenting',desc:'Individuals using AI on their own initiative. No coordination or governance.',color:'#f59e0b',num:2},
+    {range:'15 \u2013 19',name:'Stage 3 \u2014 Organising',desc:'Leadership is engaged. Governance is being built. First use cases are live.',color:'#eab308',num:3},
+    {range:'20 \u2013 24',name:'Stage 4 \u2014 Scaling',desc:'AI embedded in key functions with measurable ROI. Board visibility in place.',color:'#22c55e',num:4},
+    {range:'25 \u2013 30',name:'Stage 5 \u2014 Leading',desc:'AI is core to your competitive strategy. Building advantage, not just efficiency.',color:'#2e5cb8',num:5}
+  ];
+  for(var r=0;r<refData.length;r++){
+    var isHighlight=(refData[r].num===p1Stage.num);
+    var rowBg=isHighlight?hexToRgba(refData[r].color,0.08):'#fff';
+    var rowWeight=isHighlight?'600':'400';
+    html+='<tr style="background:'+rowBg+';font-weight:'+rowWeight+';"><td style="padding:10px 14px;border-bottom:1px solid #e8edf4;">'+refData[r].range+'</td>';
+    html+='<td style="padding:10px 14px;border-bottom:1px solid #e8edf4;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+refData[r].color+';margin-right:6px;vertical-align:middle;"></span>'+escHtml(refData[r].name)+'</td>';
+    html+='<td style="padding:10px 14px;border-bottom:1px solid #e8edf4;">'+escHtml(refData[r].desc)+'</td></tr>';
+  }
+  html+='</tbody></table></div>';
+
+  /* Next steps */
+  html+='<div style="background:#f7f9fc;border-left:4px solid #e31837;border-radius:10px;padding:20px 24px;margin-bottom:24px;page-break-inside:avoid;">';
+  html+='<div style="font-size:1rem;font-weight:700;color:#1e2a5a;margin-bottom:6px;">\uD83D\uDCCC Next Steps</div>';
+  html+='<div style="font-size:0.85rem;color:#4a5568;line-height:1.7;">Share this report with your leadership team to align on your AI maturity position and priorities. UBT will use your responses to tailor the upcoming AI Networking session to the specific needs of your business. We look forward to helping you move forward on your AI journey.</div>';
+  html+='</div>';
+
+  /* Footer */
+  html+='<div style="text-align:center;color:#8896a7;font-size:0.75rem;padding-top:16px;border-top:1px solid #e8edf4;">Prepared by UBT \u2014 Creating Possibilities \u00b7 '+today+'</div>';
+  html+='</div>';
+
+  /* --- Render to PDF --- */
+  var wrapper=document.createElement('div');
+  wrapper.style.background='#fff';wrapper.style.width='780px';wrapper.style.fontFamily="'Inter',-apple-system,BlinkMacSystemFont,sans-serif";
+  wrapper.innerHTML=html;
+  document.body.appendChild(wrapper);
+
+  var companySafe=custCompany.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')||'Report';
+  html2pdf().set({
+    margin:[8,8,8,8],
+    filename:'UBT_AI_Readiness_Report_'+companySafe+'.pdf',
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['css']}
+  }).from(wrapper).save().then(function(){
+    document.body.removeChild(wrapper);
+    tracker.style.display='';
+    if(btnTracker){btnTracker.innerHTML=origTracker;btnTracker.disabled=false}
+    if(btnBanner){btnBanner.innerHTML=origBanner;btnBanner.disabled=false}
+  }).catch(function(){
+    document.body.removeChild(wrapper);
+    tracker.style.display='';
+    if(btnTracker){btnTracker.innerHTML=origTracker;btnTracker.disabled=false}
+    if(btnBanner){btnBanner.innerHTML=origBanner;btnBanner.disabled=false}
+  });
 }
+
 function resetAll(){
   for(let k in answers)delete answers[k];for(let k in leaderAnswers)delete leaderAnswers[k];
   document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
@@ -508,8 +761,7 @@ function resetAll(){
   document.getElementById('custName').value='';document.getElementById('custCompany').value='';document.getElementById('custEmail').value='';
   for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);if(el)el.value=''}
   const l5=document.getElementById('input_l5');if(l5)l5.value='';
-  document.getElementById('results').classList.remove('active');document.getElementById('results').style.display='none';
-  document.getElementById('leaderResults').classList.remove('active');document.getElementById('leaderResults').style.display='none';
+  document.getElementById('allResults').classList.remove('active');
   const btn=document.getElementById('btnSubmit');btn.innerHTML='&#128640; Submit &amp; Review Your Results';btn.classList.remove('submitted');btn.disabled=false;
   document.querySelector('.submit-note').textContent='Your responses will be shared with the UBT team to tailor the session to your needs.';
   updateTracker();window.scrollTo({top:0,behavior:'smooth'});
