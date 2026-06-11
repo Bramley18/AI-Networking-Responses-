@@ -438,7 +438,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 <script>
-const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzQRvYBxFK8ATRYxQUr-NlEVcaiH85IvcxK3nDvm6-9RvnPtPAdQcxgGzgaoUetOlLr/exec';
+const GOOGLE_SCRIPT_URL='YOUR_GOOGLE_SCRIPT_URL_HERE';
 const answers={};const leaderAnswers={};
 const stages=[
   {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
@@ -554,17 +554,6 @@ function downloadPDF(){
   var p1Stage=getStage(p1Total);
   var p1StageColor=varToHex[p1Stage.color]||'#2e5cb8';
 
-  /* Part 2 data */
-  var p2Data=[];
-  for(var i=7;i<=12;i++){
-    var card=document.getElementById('q'+i);
-    var qText=card?card.querySelector('.q-text').textContent:'';
-    var qCat=card?card.querySelector('.q-category').textContent:'';
-    var ta=document.getElementById('input_q'+i);
-    var ans=ta?ta.value.trim():'';
-    p2Data.push({num:'Q'+i,cat:qCat,text:qText,answer:ans});
-  }
-
   /* Part 3 data */
   var p3Data=[];var lTotal=0;
   for(var i=1;i<=4;i++){
@@ -585,38 +574,38 @@ function downloadPDF(){
 
   /* --- Helper: section header banner --- */
   function sectionHeader(partLabel,title,sub){
-    return '<div style="background:#1e2a5a;color:#fff;border-radius:12px;padding:22px 28px;text-align:center;margin-bottom:24px;">'
-      +'<div style="font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:4px;">'+escHtml(partLabel)+'</div>'
-      +'<div style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">'+escHtml(title)+'</div>'
-      +'<div style="font-size:0.8rem;font-weight:300;opacity:0.7;">'+escHtml(sub)+'</div>'
+    return '<div style="background:#1e2a5a;color:#fff;border-radius:10px;padding:16px 22px;text-align:center;margin-bottom:18px;">'
+      +'<div style="font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:3px;">'+escHtml(partLabel)+'</div>'
+      +'<div style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">'+escHtml(title)+'</div>'
+      +'<div style="font-size:0.72rem;font-weight:300;opacity:0.7;">'+escHtml(sub)+'</div>'
       +'</div>';
   }
 
-  /* --- Helper: scored question card --- */
+  /* --- Helper: scored question card (compact) --- */
   function scoredCard(num,cat,text,score,answer,badgeColor){
     var sc=scoreColor(score);
-    return '<div style="border:1px solid #e8edf4;border-radius:10px;padding:18px 20px;margin-bottom:14px;page-break-inside:avoid;">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
-      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:'+(badgeColor||'#2e5cb8')+';color:#fff;font-size:0.75rem;font-weight:700;">'+escHtml(num)+'</span>'
-      +'<span style="font-size:0.7rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.8px;">'+escHtml(cat)+'</span>'
+    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:12px 14px;margin-bottom:8px;">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:'+(badgeColor||'#2e5cb8')+';color:#fff;font-size:0.68rem;font-weight:700;">'+escHtml(num)+'</span>'
+      +'<span style="font-size:0.65rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.6px;">'+escHtml(cat)+'</span>'
       +'</div>'
-      +'<div style="font-size:0.92rem;font-weight:600;color:#1e2a5a;margin-bottom:10px;">'+escHtml(text)+'</div>'
-      +'<div style="display:flex;align-items:center;gap:10px;background:'+hexToRgba(sc,0.07)+';border-left:3px solid '+sc+';border-radius:8px;padding:10px 14px;">'
-      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:'+sc+';color:#fff;font-size:0.8rem;font-weight:700;flex-shrink:0;">'+score+'</span>'
-      +'<span style="font-size:0.85rem;color:#1e2a5a;">'+escHtml(answer)+'</span>'
+      +'<div style="font-size:0.82rem;font-weight:600;color:#1e2a5a;margin-bottom:7px;">'+escHtml(text)+'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;background:'+hexToRgba(sc,0.07)+';border-left:3px solid '+sc+';border-radius:6px;padding:7px 10px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+sc+';color:#fff;font-size:0.7rem;font-weight:700;flex-shrink:0;">'+score+'</span>'
+      +'<span style="font-size:0.78rem;color:#1e2a5a;">'+escHtml(answer)+'</span>'
       +'</div></div>';
   }
 
-  /* --- Helper: open question card --- */
+  /* --- Helper: open question card (compact) --- */
   function openCard(num,cat,text,answer,borderColor){
     var bc=borderColor||'#2e5cb8';
-    return '<div style="border:1px solid #e8edf4;border-radius:10px;padding:18px 20px;margin-bottom:14px;page-break-inside:avoid;">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
-      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:'+bc+';color:#fff;font-size:0.75rem;font-weight:700;">'+escHtml(num)+'</span>'
-      +'<span style="font-size:0.7rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.8px;">'+escHtml(cat)+'</span>'
+    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:12px 14px;margin-bottom:8px;">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:'+bc+';color:#fff;font-size:0.68rem;font-weight:700;">'+escHtml(num)+'</span>'
+      +'<span style="font-size:0.65rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.6px;">'+escHtml(cat)+'</span>'
       +'</div>'
-      +'<div style="font-size:0.92rem;font-weight:600;color:#1e2a5a;margin-bottom:10px;">'+escHtml(text)+'</div>'
-      +'<div style="background:#f7f9fc;border-left:3px solid '+bc+';border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#4a5568;white-space:pre-wrap;line-height:1.6;">'+escHtml(answer||'No response provided.')+'</div>'
+      +'<div style="font-size:0.82rem;font-weight:600;color:#1e2a5a;margin-bottom:7px;">'+escHtml(text)+'</div>'
+      +'<div style="background:#f7f9fc;border-left:3px solid '+bc+';border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#4a5568;white-space:pre-wrap;line-height:1.5;">'+escHtml(answer||'No response provided.')+'</div>'
       +'</div>';
   }
 
@@ -646,60 +635,52 @@ function downloadPDF(){
   html+='<div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.35);z-index:1;">Confidential \u2014 '+escHtml(custCompany)+'</div>';
   html+='</div>';
 
-  /* --- PART 1 --- */
-  html+='<div style="background:#fff;padding:30px 40px;">';
+  /* --- PART 1 (one page) --- */
+  html+='<div style="background:#fff;padding:24px 36px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Part 1','AI Maturity Assessment','6 scored questions \u00b7 Maximum 30 points');
   for(var i=0;i<p1Data.length;i++){
     html+=scoredCard(p1Data[i].num,p1Data[i].cat,p1Data[i].text,p1Data[i].score,p1Data[i].answer,'#2e5cb8');
   }
-  html+='<div style="border:2px solid '+p1StageColor+';border-radius:12px;background:'+hexToRgba(p1StageColor,0.05)+';padding:24px 28px;text-align:center;margin-top:20px;page-break-inside:avoid;">';
-  html+='<div style="font-size:2.2rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+' <span style="font-size:1rem;font-weight:400;color:#8896a7;">/ 30</span></div>';
-  html+='<div style="font-size:1.1rem;font-weight:700;color:#1e2a5a;margin-top:6px;">'+escHtml(p1Stage.name)+'</div>';
-  html+='<div style="font-size:0.85rem;color:#4a5568;margin-top:4px;max-width:500px;margin-left:auto;margin-right:auto;">'+escHtml(p1Stage.desc)+'</div>';
+  html+='<div style="border:2px solid '+p1StageColor+';border-radius:10px;background:'+hexToRgba(p1StageColor,0.05)+';padding:18px 22px;text-align:center;margin-top:14px;">';
+  html+='<div style="font-size:1.8rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+' <span style="font-size:0.9rem;font-weight:400;color:#8896a7;">/ 30</span></div>';
+  html+='<div style="font-size:0.95rem;font-weight:700;color:#1e2a5a;margin-top:4px;">'+escHtml(p1Stage.name)+'</div>';
+  html+='<div style="font-size:0.78rem;color:#4a5568;margin-top:3px;max-width:480px;margin-left:auto;margin-right:auto;">'+escHtml(p1Stage.desc)+'</div>';
   html+='</div></div>';
 
-  /* --- PART 2 --- */
-  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
-  html+=sectionHeader('Part 2','Open Reflection','6 open-ended questions');
-  for(var i=0;i<p2Data.length;i++){
-    html+=openCard(p2Data[i].num,p2Data[i].cat,p2Data[i].text,p2Data[i].answer,'#2e5cb8');
-  }
-  html+='</div>';
-
-  /* --- PART 3 --- */
-  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
+  /* --- PART 3 (one page) --- */
+  html+='<div style="background:#fff;padding:24px 36px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Part 3','You as an AI-Driven Leader','Inspired by Geoff Woods\u2019 The AI-Driven Leader \u00b7 Scored separately');
   for(var i=0;i<p3Data.length;i++){
     html+=scoredCard(p3Data[i].num,p3Data[i].cat,p3Data[i].text,p3Data[i].score,p3Data[i].answer,'#e31837');
   }
   html+=openCard('L5','One Decision',l5Text,l5Ans,'#e31837');
-  html+='<div style="border:2px solid #e31837;border-radius:12px;background:rgba(227,24,55,0.05);padding:24px 28px;text-align:center;margin-top:20px;page-break-inside:avoid;">';
-  html+='<div style="font-size:2.2rem;font-weight:800;color:#e31837;">'+lTotal+' <span style="font-size:1rem;font-weight:400;color:#8896a7;">/ 20</span></div>';
-  html+='<div style="font-size:1.1rem;font-weight:700;color:#1e2a5a;margin-top:6px;">'+escHtml(lStage.name)+'</div>';
-  html+='<div style="font-size:0.85rem;color:#4a5568;margin-top:4px;max-width:500px;margin-left:auto;margin-right:auto;">'+escHtml(lStage.desc)+'</div>';
+  html+='<div style="border:2px solid #e31837;border-radius:10px;background:rgba(227,24,55,0.05);padding:18px 22px;text-align:center;margin-top:14px;">';
+  html+='<div style="font-size:1.8rem;font-weight:800;color:#e31837;">'+lTotal+' <span style="font-size:0.9rem;font-weight:400;color:#8896a7;">/ 20</span></div>';
+  html+='<div style="font-size:0.95rem;font-weight:700;color:#1e2a5a;margin-top:4px;">'+escHtml(lStage.name)+'</div>';
+  html+='<div style="font-size:0.78rem;color:#4a5568;margin-top:3px;max-width:480px;margin-left:auto;margin-right:auto;">'+escHtml(lStage.desc)+'</div>';
   html+='</div></div>';
 
-  /* --- SUMMARY PAGE --- */
-  html+='<div style="background:#fff;padding:30px 40px;page-break-before:always;">';
+  /* --- SUMMARY (one page) --- */
+  html+='<div style="background:#fff;padding:24px 36px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Summary','Results Overview','');
   /* Two score boxes */
-  html+='<div style="display:flex;gap:20px;margin-bottom:24px;">';
-  html+='<div style="flex:1;border:2px solid '+p1StageColor+';border-radius:12px;padding:22px;text-align:center;page-break-inside:avoid;">';
-  html+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:8px;">AI Maturity</div>';
-  html+='<div style="font-size:2.4rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+'<span style="font-size:1rem;font-weight:400;color:#8896a7;"> / 30</span></div>';
-  html+='<div style="font-size:0.9rem;font-weight:600;color:#1e2a5a;margin-top:4px;">'+escHtml(p1Stage.name)+'</div>';
+  html+='<div style="display:flex;gap:16px;margin-bottom:18px;">';
+  html+='<div style="flex:1;border:2px solid '+p1StageColor+';border-radius:10px;padding:18px;text-align:center;">';
+  html+='<div style="font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:6px;">AI Maturity</div>';
+  html+='<div style="font-size:2rem;font-weight:800;color:'+p1StageColor+';">'+p1Total+'<span style="font-size:0.85rem;font-weight:400;color:#8896a7;"> / 30</span></div>';
+  html+='<div style="font-size:0.82rem;font-weight:600;color:#1e2a5a;margin-top:3px;">'+escHtml(p1Stage.name)+'</div>';
   html+='</div>';
-  html+='<div style="flex:1;border:2px solid #e31837;border-radius:12px;padding:22px;text-align:center;page-break-inside:avoid;">';
-  html+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:8px;">AI Leadership</div>';
-  html+='<div style="font-size:2.4rem;font-weight:800;color:#e31837;">'+lTotal+'<span style="font-size:1rem;font-weight:400;color:#8896a7;"> / 20</span></div>';
-  html+='<div style="font-size:0.9rem;font-weight:600;color:#1e2a5a;margin-top:4px;">'+escHtml(lStage.name)+'</div>';
+  html+='<div style="flex:1;border:2px solid #e31837;border-radius:10px;padding:18px;text-align:center;">';
+  html+='<div style="font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:6px;">AI Leadership</div>';
+  html+='<div style="font-size:2rem;font-weight:800;color:#e31837;">'+lTotal+'<span style="font-size:0.85rem;font-weight:400;color:#8896a7;"> / 20</span></div>';
+  html+='<div style="font-size:0.82rem;font-weight:600;color:#1e2a5a;margin-top:3px;">'+escHtml(lStage.name)+'</div>';
   html+='</div></div>';
 
   /* Reference table */
-  html+='<div style="border:1px solid #e8edf4;border-radius:12px;overflow:hidden;margin-bottom:24px;page-break-inside:avoid;">';
-  html+='<div style="background:#f7f9fc;padding:12px 18px;font-size:0.85rem;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">AI Maturity Stage Reference</div>';
-  html+='<table style="width:100%;border-collapse:collapse;font-size:0.8rem;">';
-  html+='<thead><tr style="background:#f7f9fc;"><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Score</th><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Stage</th><th style="text-align:left;padding:10px 14px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Description</th></tr></thead><tbody>';
+  html+='<div style="border:1px solid #e8edf4;border-radius:10px;overflow:hidden;margin-bottom:18px;">';
+  html+='<div style="background:#f7f9fc;padding:10px 16px;font-size:0.78rem;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">AI Maturity Stage Reference</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:0.72rem;">';
+  html+='<thead><tr style="background:#f7f9fc;"><th style="text-align:left;padding:8px 12px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Score</th><th style="text-align:left;padding:8px 12px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Stage</th><th style="text-align:left;padding:8px 12px;font-weight:700;color:#1e2a5a;border-bottom:1px solid #e8edf4;">Description</th></tr></thead><tbody>';
   var refData=[
     {range:'6 \u2013 9',name:'Stage 1 \u2014 Unaware',desc:'AI is happening around you but not intentionally inside your business.',color:'#ef4444',num:1},
     {range:'10 \u2013 14',name:'Stage 2 \u2014 Experimenting',desc:'Individuals using AI on their own initiative. No coordination or governance.',color:'#f59e0b',num:2},
@@ -711,20 +692,20 @@ function downloadPDF(){
     var isHighlight=(refData[r].num===p1Stage.num);
     var rowBg=isHighlight?hexToRgba(refData[r].color,0.08):'#fff';
     var rowWeight=isHighlight?'600':'400';
-    html+='<tr style="background:'+rowBg+';font-weight:'+rowWeight+';"><td style="padding:10px 14px;border-bottom:1px solid #e8edf4;">'+refData[r].range+'</td>';
-    html+='<td style="padding:10px 14px;border-bottom:1px solid #e8edf4;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+refData[r].color+';margin-right:6px;vertical-align:middle;"></span>'+escHtml(refData[r].name)+'</td>';
-    html+='<td style="padding:10px 14px;border-bottom:1px solid #e8edf4;">'+escHtml(refData[r].desc)+'</td></tr>';
+    html+='<tr style="background:'+rowBg+';font-weight:'+rowWeight+';"><td style="padding:8px 12px;border-bottom:1px solid #e8edf4;">'+refData[r].range+'</td>';
+    html+='<td style="padding:8px 12px;border-bottom:1px solid #e8edf4;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+refData[r].color+';margin-right:5px;vertical-align:middle;"></span>'+escHtml(refData[r].name)+'</td>';
+    html+='<td style="padding:8px 12px;border-bottom:1px solid #e8edf4;">'+escHtml(refData[r].desc)+'</td></tr>';
   }
   html+='</tbody></table></div>';
 
   /* Next steps */
-  html+='<div style="background:#f7f9fc;border-left:4px solid #e31837;border-radius:10px;padding:20px 24px;margin-bottom:24px;page-break-inside:avoid;">';
-  html+='<div style="font-size:1rem;font-weight:700;color:#1e2a5a;margin-bottom:6px;">\uD83D\uDCCC Next Steps</div>';
-  html+='<div style="font-size:0.85rem;color:#4a5568;line-height:1.7;">Share this report with your leadership team to align on your AI maturity position and priorities. UBT will use your responses to tailor the upcoming AI Networking session to the specific needs of your business. We look forward to helping you move forward on your AI journey.</div>';
+  html+='<div style="background:#f7f9fc;border-left:4px solid #e31837;border-radius:8px;padding:16px 20px;margin-bottom:18px;">';
+  html+='<div style="font-size:0.88rem;font-weight:700;color:#1e2a5a;margin-bottom:4px;">\uD83D\uDCCC Next Steps</div>';
+  html+='<div style="font-size:0.78rem;color:#4a5568;line-height:1.6;">Share this report with your leadership team to align on your AI maturity position and priorities. UBT will use your responses to tailor the upcoming AI Networking session to the specific needs of your business. We look forward to helping you move forward on your AI journey.</div>';
   html+='</div>';
 
   /* Footer */
-  html+='<div style="text-align:center;color:#8896a7;font-size:0.75rem;padding-top:16px;border-top:1px solid #e8edf4;">Prepared by UBT \u2014 Creating Possibilities \u00b7 '+today+'</div>';
+  html+='<div style="text-align:center;color:#8896a7;font-size:0.7rem;padding-top:12px;border-top:1px solid #e8edf4;">Prepared by UBT \u2014 Creating Possibilities \u00b7 '+today+'</div>';
   html+='</div>';
 
   /* --- Render to PDF --- */
@@ -735,7 +716,7 @@ function downloadPDF(){
 
   var companySafe=custCompany.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')||'Report';
   html2pdf().set({
-    margin:[8,8,8,8],
+    margin:[6,6,6,6],
     filename:'UBT_AI_Readiness_Report_'+companySafe+'.pdf',
     image:{type:'jpeg',quality:0.98},
     html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},
