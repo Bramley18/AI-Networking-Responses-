@@ -66,14 +66,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .text-input{width:100%;padding:14px 16px;border:2px solid var(--g200);border-radius:10px;font-family:'Inter',sans-serif;font-size:0.92rem;color:var(--ubt-blue);resize:vertical;min-height:100px;transition:all .25s;background:var(--white);line-height:1.6}
 .text-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .text-input::placeholder{color:var(--g300)}
-.results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;opacity:.5;transition:all .6s;text-align:left}
-.results.active{opacity:1;animation:revealResult .6s ease forwards}
+
+/* RESULTS - hidden until submit */
+.results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;display:none;text-align:left}
+.results.active{display:block;animation:revealResult .6s ease forwards}
 @keyframes revealResult{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.results-locked{text-align:center;padding:28px 20px;color:var(--g500);font-size:0.93rem}
-.results-locked svg{margin-bottom:10px}
-.results-content{display:none}
-.results.active .results-locked{display:none}
-.results.active .results-content{display:block}
 .results h2{font-size:1.2rem;text-align:center;margin-bottom:24px;color:var(--ubt-blue)}
 .result-score-circle{width:110px;height:110px;border-radius:50%;margin:0 auto 10px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .result-score-circle .score-value{font-size:2.6rem;font-weight:800;color:var(--white);line-height:1}
@@ -87,13 +84,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .stage-bar-labels{display:flex;font-size:0.65rem;color:var(--g500);font-weight:500}
 .stage-bar-labels span{text-align:center}
 .stage-bar-marker{position:absolute;top:-8px;width:3px;height:30px;background:var(--ubt-blue);border-radius:2px;transition:left .5s;z-index:2}
-.leader-results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;opacity:.5;transition:all .6s}
-.leader-results.active{opacity:1;animation:revealResult .6s ease forwards}
-.leader-results-locked{text-align:center;padding:28px 20px;color:var(--g500);font-size:0.93rem}
-.leader-results-locked svg{margin-bottom:10px}
-.leader-results-content{display:none}
-.leader-results.active .leader-results-locked{display:none}
-.leader-results.active .leader-results-content{display:block}
+.leader-results{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;display:none}
+.leader-results.active{display:block;animation:revealResult .6s ease forwards}
 .ref-table{margin-top:28px}
 .ref-table h3{font-size:0.95rem;margin-bottom:14px;color:var(--ubt-blue)}
 .ref-table table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:10px;border:1px solid var(--g200)}
@@ -103,6 +95,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .ref-table tr:nth-child(even) td{background:var(--g100)}
 .ref-table .stage-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
 .ref-table .highlight-row td{background:var(--accent-glow) !important;font-weight:600;color:var(--ubt-blue)}
+
+/* PROGRESS INDICATOR CARDS */
+.progress-card{background:var(--white);border-radius:var(--radius);padding:24px 30px;margin-bottom:32px;text-align:center;box-shadow:var(--shadow);border:2px solid var(--ubt-red);position:relative}
+.progress-card .progress-icon{font-size:1.8rem;margin-bottom:8px}
+.progress-card .progress-text{font-size:1rem;font-weight:700;color:var(--ubt-blue);margin-bottom:4px}
+.progress-card .progress-sub{font-size:0.85rem;color:var(--g500);line-height:1.5}
+.progress-card .progress-bar-visual{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.progress-card .bar-step{height:8px;border-radius:4px;flex:1;max-width:80px}
+.progress-card .bar-step.done{background:var(--accent)}
+.progress-card .bar-step.current{background:var(--ubt-red);animation:pulse 1.5s ease infinite}
+.progress-card .bar-step.todo{background:var(--g200)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.progress-card .arrow-down{margin-top:12px;display:inline-block;animation:bounce 1.5s ease infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
 .submit-section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 30px;margin-bottom:32px;text-align:center}
 .submit-section h2{font-size:1.15rem;margin-bottom:8px;color:var(--ubt-blue)}
 .submit-section p.sub{font-size:0.88rem;color:var(--g500);margin-bottom:24px}
@@ -239,9 +246,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 </div>
 
+  <!-- RESULTS - hidden until submit -->
   <div class="results" id="results">
-    <div class="results-locked"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8896a7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><p>Complete all 6 questions above to reveal your AI maturity stage</p></div>
-    <div class="results-content">
       <h2>Your AI Maturity Result</h2>
       <div class="result-score-circle" id="resultCircle"><div class="score-value" id="resultScore">0</div><div class="score-of">out of 30</div></div>
       <div class="result-stage-banner" id="resultBanner"><div class="stage-title" id="resultStageTitle">&mdash;</div><div class="stage-desc" id="resultStageDesc">&mdash;</div></div>
@@ -260,8 +266,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <tr data-stage="4"><td>20&ndash;24</td><td><span class="stage-dot" style="background:var(--s4)"></span>Stage 4 &mdash; Scaling</td><td>AI embedded in key functions with measurable ROI. Board visibility in place.</td></tr>
         <tr data-stage="5"><td>25&ndash;30</td><td><span class="stage-dot" style="background:var(--s5)"></span>Stage 5 &mdash; Leading</td><td>AI is core to your competitive strategy. Building advantage, not just efficiency.</td></tr>
       </tbody></table></div>
-    </div>
   </div>
+
+  <!-- PROGRESS INDICATOR: After Part 1 -->
+  <div class="progress-card" id="progressAfterP1">
+    <div class="progress-icon">📋</div>
+    <div class="progress-text">You’re 1/3 of the way there!</div>
+    <div class="progress-sub">Continue to Part 2 below — a few open questions about your business.</div>
+    <div class="progress-bar-visual">
+      <div class="bar-step done"></div>
+      <div class="bar-step current"></div>
+      <div class="bar-step todo"></div>
+    </div>
+    <div class="arrow-down"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e31837" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </div>
+
   <div class="section-divider"><div class="part-label">Part 2</div><h2>Your Business Today</h2><p>A few open questions in your own words. These help us frame the session around the outcomes and challenges that actually matter to you.</p></div>
 <div class="question-card" id="q7">
 <div class="q-header"><span class="q-number">Q7</span><span class="q-category">Desired Outcome</span></div>
@@ -293,6 +312,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="q-text">How would you describe your current IT support and data security setup?</div>
 <textarea class="text-input" id="input_q12" placeholder="Type your answer here…" rows="4"></textarea>
 </div>
+
+
+  <!-- PROGRESS INDICATOR: After Part 2 -->
+  <div class="progress-card" id="progressAfterP2">
+    <div class="progress-icon">🎯</div>
+    <div class="progress-text">Nearly there! One more part to go.</div>
+    <div class="progress-sub">Complete Part 3 below — this one’s about you personally as an AI-driven leader.</div>
+    <div class="progress-bar-visual">
+      <div class="bar-step done"></div>
+      <div class="bar-step done"></div>
+      <div class="bar-step current"></div>
+    </div>
+    <div class="arrow-down"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e31837" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </div>
 
   <div class="section-divider"><div class="part-label">Part 3</div><h2>You as an AI-Driven Leader</h2><p>Inspired by Geoff Woods’ <em>The AI-Driven Leader</em>. This part is about you personally, not your organisation — so it is scored separately and does not affect your maturity stage above.</p></div>
 <div class="question-card" id="l1">
@@ -345,18 +378,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <textarea class="text-input" id="input_l5" placeholder="Type your answer here…" rows="4"></textarea>
 </div>
 
+  <!-- LEADER RESULTS - hidden until submit -->
   <div class="leader-results" id="leaderResults">
-    <div class="leader-results-locked"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8896a7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><p>Complete L1–L4 to reveal your AI leadership score</p></div>
     <div class="leader-results-content">
       <h2>Your AI Leadership Score</h2>
       <div class="result-score-circle" id="leaderCircle" style="background:var(--ubt-red)"><div class="score-value" id="leaderScore">0</div><div class="score-of">out of 20</div></div>
       <div class="result-stage-banner" id="leaderBanner" style="background:rgba(227,24,55,0.08);color:var(--ubt-blue)"><div class="stage-title" id="leaderTitle">&mdash;</div><div class="stage-desc" id="leaderDesc">&mdash;</div></div>
     </div>
   </div>
+
   <div class="submit-section" id="submitSection">
     <h2>Ready to Submit?</h2>
-    <p class="sub">Once you’re happy with your answers, click below to send your responses to the UBT team.</p>
-    <button class="btn-submit" id="btnSubmit" onclick="submitToGoogleSheets()">&#128640; Submit My Results</button>
+    <p class="sub">Once you’re happy with your answers, click below to submit your responses and see your results.</p>
+    <button class="btn-submit" id="btnSubmit" onclick="submitToGoogleSheets()">&#128640; Submit &amp; Review Your Results</button>
     <p class="submit-note">Your responses will be shared with the UBT team to tailor the session to your needs.</p>
   </div>
   <div class="footer">Prepared for the AI Networking Session &bull; UBT &mdash; Creating Possibilities</div>
@@ -372,7 +406,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 <script>
-const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbymTHaBAJob5COALwppnQqSzqX7Ofk7iTOllDFdjL2sWaWgRm6wgS8rCzDxEOFpVxR1/exec';
+const GOOGLE_SCRIPT_URL='YOUR_GOOGLE_SCRIPT_URL_HERE';
 const answers={};const leaderAnswers={};
 const stages=[
   {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
@@ -396,32 +430,39 @@ function getLeaderStage(s){for(const st of leaderStages)if(s>=st.min&&s<=st.max)
 function selectOption(q,score){
   const card=document.getElementById('q'+q);card.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
   card.querySelectorAll('.option')[score-1].classList.add('selected');answers[q]=score;updateTracker();
-  setTimeout(()=>{for(let i=1;i<=6;i++){if(!answers[i]){document.getElementById('q'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('results').scrollIntoView({behavior:'smooth',block:'center'})},350);
+  setTimeout(()=>{for(let i=1;i<=6;i++){if(!answers[i]){document.getElementById('q'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('progressAfterP1').scrollIntoView({behavior:'smooth',block:'center'})},350);
 }
 function selectLeader(q,score){
   const card=document.getElementById('l'+q);card.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
   card.querySelectorAll('.option')[score-1].classList.add('selected');leaderAnswers[q]=score;updateTracker();
-  setTimeout(()=>{for(let i=1;i<=4;i++){if(!leaderAnswers[i]){document.getElementById('l'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('leaderResults').scrollIntoView({behavior:'smooth',block:'center'})},350);
+  setTimeout(()=>{for(let i=1;i<=4;i++){if(!leaderAnswers[i]){document.getElementById('l'+i).scrollIntoView({behavior:'smooth',block:'center'});return}}document.getElementById('submitSection').scrollIntoView({behavior:'smooth',block:'center'})},350);
 }
 function updateTracker(){
   let t=0,c=0;
   for(let i=1;i<=6;i++){const d=document.getElementById('dot-'+i);if(answers[i]){d.textContent=answers[i];d.classList.add('answered');t+=answers[i];c++}else{d.textContent=i;d.classList.remove('answered')}}
   document.getElementById('p1total').textContent=t;
-  const r=document.getElementById('results');
-  if(c===6){r.classList.add('active');const st=getStage(t);
-    document.getElementById('resultScore').textContent=t;document.getElementById('resultStageTitle').textContent=st.name;document.getElementById('resultStageDesc').textContent=st.desc;
-    document.getElementById('resultCircle').style.background=st.color;
-    const b=document.getElementById('resultBanner');b.style.background=st.color+'18';b.style.color='var(--ubt-blue)';
-    document.getElementById('stageMarker').style.left=((t-6)/24)*100+'%';
-    document.querySelectorAll('#refTableBody tr').forEach(tr=>{tr.classList.remove('highlight-row');if(parseInt(tr.dataset.stage)===st.num)tr.classList.add('highlight-row')});
-  }else{r.classList.remove('active')}
   let lt=0,lc=0;
   for(let i=1;i<=4;i++){const d=document.getElementById('ldot-'+i);if(leaderAnswers[i]){d.textContent=leaderAnswers[i];d.classList.add('leader-answered');lt+=leaderAnswers[i];lc++}else{d.textContent=i;d.classList.remove('leader-answered')}}
   document.getElementById('ltotal').textContent=lt;
-  const lr=document.getElementById('leaderResults');
-  if(lc===4){lr.classList.add('active');const ls=getLeaderStage(lt);
-    document.getElementById('leaderScore').textContent=lt;document.getElementById('leaderTitle').textContent=ls.name;document.getElementById('leaderDesc').textContent=ls.desc;
-  }else{lr.classList.remove('active')}
+}
+function revealResults(){
+  let t=0;for(let i=1;i<=6;i++)if(answers[i])t+=answers[i];
+  const st=getStage(t);
+  document.getElementById('resultScore').textContent=t;
+  document.getElementById('resultStageTitle').textContent=st.name;
+  document.getElementById('resultStageDesc').textContent=st.desc;
+  document.getElementById('resultCircle').style.background=st.color;
+  const b=document.getElementById('resultBanner');b.style.background=st.color+'18';b.style.color='var(--ubt-blue)';
+  document.getElementById('stageMarker').style.left=((t-6)/24)*100+'%';
+  document.querySelectorAll('#refTableBody tr').forEach(tr=>{tr.classList.remove('highlight-row');if(parseInt(tr.dataset.stage)===st.num)tr.classList.add('highlight-row')});
+  document.getElementById('results').classList.add('active');
+  let lt=0;for(let i=1;i<=4;i++)if(leaderAnswers[i])lt+=leaderAnswers[i];
+  if(lt>0){const ls=getLeaderStage(lt);
+    document.getElementById('leaderScore').textContent=lt;
+    document.getElementById('leaderTitle').textContent=ls.name;
+    document.getElementById('leaderDesc').textContent=ls.desc;
+    document.getElementById('leaderResults').classList.add('active');
+  }
 }
 function submitToGoogleSheets(){
   const name=document.getElementById('custName').value.trim();const company=document.getElementById('custCompany').value.trim();const email=document.getElementById('custEmail').value.trim();
@@ -438,8 +479,13 @@ function submitToGoogleSheets(){
   for(let i=1;i<=4;i++)fd.append('L'+i,leaderAnswers[i]||'');
   const l5=document.getElementById('input_l5');fd.append('L5',l5?l5.value.trim():'');fd.append('LeaderTotal',lt);
   fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:fd})
-  .then(r=>r.text()).then(()=>{btn.innerHTML='&#10004; Submitted \u2014 Thank you!';btn.classList.add('submitted');btn.disabled=true;document.querySelector('.submit-note').textContent='Your results have been recorded. See you at the AI Networking session!'})
-  .catch(()=>{alert('There was a problem submitting. Please try again.');btn.innerHTML='&#128640; Submit My Results';btn.disabled=false});
+  .then(r=>r.text()).then(()=>{
+    btn.innerHTML='&#10004; Submitted \u2014 Scroll down to see your results!';btn.classList.add('submitted');btn.disabled=true;
+    document.querySelector('.submit-note').textContent='Your results have been recorded. See you at the AI Networking session!';
+    revealResults();
+    setTimeout(()=>{document.getElementById('results').scrollIntoView({behavior:'smooth',block:'center'})},400);
+  })
+  .catch(()=>{alert('There was a problem submitting. Please try again.');btn.innerHTML='&#128640; Submit &amp; Review Your Results';btn.disabled=false});
 }
 function downloadPDF(){
   const btn=document.getElementById('btnPdf');const orig=btn.innerHTML;btn.innerHTML='\u2026';btn.disabled=true;
@@ -449,8 +495,9 @@ function downloadPDF(){
   wrapper.appendChild(document.querySelector('.header').cloneNode(true));
   const cc=container.cloneNode(true);cc.style.maxWidth='780px';cc.style.paddingTop='20px';cc.style.paddingBottom='40px';
   const ss=cc.querySelector('.submit-section');if(ss)ss.style.display='none';
-  const ro=document.getElementById('results');if(ro.classList.contains('active')){const rc=cc.querySelector('.results');if(rc){rc.classList.add('active');rc.style.opacity='1';const rcc=rc.querySelector('.results-content');if(rcc)rcc.style.display='block';const rl=rc.querySelector('.results-locked');if(rl)rl.style.display='none'}}
-  const lr=document.getElementById('leaderResults');if(lr.classList.contains('active')){const lrc=cc.querySelector('.leader-results');if(lrc){lrc.classList.add('active');lrc.style.opacity='1';const lrcc=lrc.querySelector('.leader-results-content');if(lrcc)lrcc.style.display='block';const lrl=lrc.querySelector('.leader-results-locked');if(lrl)lrl.style.display='none'}}
+  const pcs=cc.querySelectorAll('.progress-card');pcs.forEach(pc=>pc.style.display='none');
+  const ro=document.getElementById('results');if(ro.classList.contains('active')){const rc=cc.querySelector('.results');if(rc){rc.style.display='block';rc.style.opacity='1'}}
+  const lr=document.getElementById('leaderResults');if(lr.classList.contains('active')){const lrc=cc.querySelector('.leader-results');if(lrc){lrc.style.display='block';lrc.style.opacity='1'}}
   wrapper.appendChild(cc);document.body.appendChild(wrapper);
   html2pdf().set({margin:[8,8,8,8],filename:'UBT_AI_Readiness_Assessment.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all','css','legacy']}}).from(wrapper).save().then(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false}).catch(function(){document.body.removeChild(wrapper);tracker.style.display='';btn.innerHTML=orig;btn.disabled=false});
 }
@@ -461,7 +508,9 @@ function resetAll(){
   document.getElementById('custName').value='';document.getElementById('custCompany').value='';document.getElementById('custEmail').value='';
   for(let i=7;i<=12;i++){const el=document.getElementById('input_q'+i);if(el)el.value=''}
   const l5=document.getElementById('input_l5');if(l5)l5.value='';
-  const btn=document.getElementById('btnSubmit');btn.innerHTML='&#128640; Submit My Results';btn.classList.remove('submitted');btn.disabled=false;
+  document.getElementById('results').classList.remove('active');document.getElementById('results').style.display='none';
+  document.getElementById('leaderResults').classList.remove('active');document.getElementById('leaderResults').style.display='none';
+  const btn=document.getElementById('btnSubmit');btn.innerHTML='&#128640; Submit &amp; Review Your Results';btn.classList.remove('submitted');btn.disabled=false;
   document.querySelector('.submit-note').textContent='Your responses will be shared with the UBT team to tailor the session to your needs.';
   updateTracker();window.scrollTo({top:0,behavior:'smooth'});
 }
