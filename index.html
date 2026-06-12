@@ -438,7 +438,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 <script>
-const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbx5A0_9KPj7fJBQGd6ifX6tCdIPhbmoD9OND194ZvcGOOnyp9MQJCPM6QduZuz1WGQ1/exec';
+const GOOGLE_SCRIPT_URL='YOUR_GOOGLE_SCRIPT_URL_HERE';
 const answers={};const leaderAnswers={};
 const stages=[
   {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
@@ -629,8 +629,8 @@ function downloadPDF(){
   html+='<div style="position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.35);z-index:1;">Confidential \u2014 '+escHtml(custCompany)+'</div>';
   html+='</div>';
 
-  /* RESULTS PAGE — scores + stage cards + reference table + Part 3 result + next steps */
-  html+='<div style="background:#fff;padding:28px 36px 28px;page-break-before:always;">';
+  /* RESULTS PAGE */
+  html+='<div style="background:#fff;padding:28px 36px 28px;">';
 
   /* Section header */
   html+=sectionHeader('Summary','Results Overview','');
@@ -653,12 +653,18 @@ function downloadPDF(){
   html+='<div style="flex:1;border:1px solid #e31837;border-radius:8px;padding:11px;text-align:center;font-size:0.88rem;font-weight:700;color:#1e2a5a;">'+escHtml(lStage.name)+'</div>';
   html+='</div>';
 
+  /* Part 3 Details - Leadership Results */
+  html+=sectionHeader('Part 3','AI Leadership Result','Your personal AI leadership assessment');
+
   /* Part 3 result card */
   html+='<div style="border:2px solid #e31837;border-radius:12px;background:rgba(227,24,55,0.04);padding:18px 22px;text-align:center;margin-bottom:20px;page-break-inside:avoid;break-inside:avoid;">';
   html+='<div style="font-size:2rem;font-weight:800;color:#e31837;line-height:1;">'+lTotal+' <span style="font-size:0.85rem;font-weight:400;color:#8896a7;">/ 20</span></div>';
   html+='<div style="font-size:0.95rem;font-weight:700;color:#1e2a5a;margin-top:6px;">'+escHtml(lStage.name)+'</div>';
   html+='<div style="font-size:0.78rem;color:#4a5568;margin-top:4px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.5;">'+escHtml(lStage.desc)+'</div>';
   html+='</div>';
+
+  /* Summary Section */
+  html+=sectionHeader('Summary','Overview & Next Steps','');
 
   /* AI Maturity Stage Reference table */
   html+='<div style="border:1px solid #e8edf4;border-radius:10px;overflow:hidden;margin-bottom:20px;page-break-inside:avoid;break-inside:avoid;">';
