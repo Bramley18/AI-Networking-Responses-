@@ -438,7 +438,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 <script>
-const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbx5A0_9KPj7fJBQGd6ifX6tCdIPhbmoD9OND194ZvcGOOnyp9MQJCPM6QduZuz1WGQ1/exec';
+const GOOGLE_SCRIPT_URL='YOUR_GOOGLE_SCRIPT_URL_HERE';
 const answers={};const leaderAnswers={};
 const stages=[
   {min:6,max:9,num:1,name:"Stage 1 \u2014 Unaware",desc:"AI is happening around you but not intentionally inside your business. No strategy, no ownership, no policy.",color:"var(--s1)"},
@@ -571,7 +571,7 @@ function downloadPDF(){
   var l5Ans=l5Ta?l5Ta.value.trim():'';
 
   function sectionHeader(partLabel,title,sub){
-    return '<div style="background:#1e2a5a;color:#fff;border-radius:10px;padding:16px 22px;text-align:center;margin-bottom:16px;page-break-inside:avoid;page-break-after:avoid;">'
+    return '<div style="background:#1e2a5a;color:#fff;border-radius:10px;padding:16px 22px;text-align:center;margin-bottom:16px;page-break-inside:avoid;page-break-after:avoid;break-after:avoid;">'
       +'<div style="font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:3px;">'+escHtml(partLabel)+'</div>'
       +'<div style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">'+escHtml(title)+'</div>'
       +'<div style="font-size:0.72rem;font-weight:300;opacity:0.7;">'+escHtml(sub)+'</div>'
@@ -580,7 +580,7 @@ function downloadPDF(){
 
   function scoredCard(num,cat,text,score,answer,badgeColor){
     var sc=scoreColor(score);
-    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:10px 14px;margin-bottom:7px;page-break-inside:avoid;">'
+    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:10px 14px;margin-bottom:7px;page-break-inside:avoid;break-inside:avoid;">'
       +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">'
       +'<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:'+(badgeColor||'#2e5cb8')+';color:#fff;font-size:0.65rem;font-weight:700;">'+escHtml(num)+'</span>'
       +'<span style="font-size:0.62rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.6px;">'+escHtml(cat)+'</span>'
@@ -594,7 +594,7 @@ function downloadPDF(){
 
   function openCard(num,cat,text,answer,borderColor){
     var bc=borderColor||'#2e5cb8';
-    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:10px 14px;margin-bottom:7px;page-break-inside:avoid;">'
+    return '<div style="border:1px solid #e8edf4;border-radius:8px;padding:10px 14px;margin-bottom:7px;page-break-inside:avoid;break-inside:avoid;">'
       +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">'
       +'<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:'+bc+';color:#fff;font-size:0.65rem;font-weight:700;">'+escHtml(num)+'</span>'
       +'<span style="font-size:0.62rem;font-weight:600;color:#8896a7;text-transform:uppercase;letter-spacing:0.6px;">'+escHtml(cat)+'</span>'
@@ -607,7 +607,7 @@ function downloadPDF(){
   var html='';
 
   /* COVER */
-  html+='<div style="min-height:1050px;background:#1e2a5a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;page-break-after:always;padding:60px 40px;text-align:center;">';
+  html+='<div style="height:1122px;background:#1e2a5a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;page-break-after:always;padding:60px 40px;text-align:center;">';
   html+='<div style="position:absolute;top:-120px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(46,92,184,0.2) 0%,transparent 70%);border-radius:50%;"></div>';
   html+='<div style="position:absolute;bottom:-100px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(227,24,55,0.15) 0%,transparent 70%);border-radius:50%;"></div>';
   html+='<div style="position:relative;z-index:1;margin-bottom:16px;">';
@@ -630,8 +630,10 @@ function downloadPDF(){
   html+='</div>';
 
   /* PART 1 */
-  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;">';
+  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Part 1','AI Maturity Assessment','6 scored questions \u00b7 Maximum 30 points');
+  html+='</div>';
+  html+='<div style="background:#fff;padding:0 36px 10px;">';
   for(var i=0;i<p1Data.length;i++){
     html+=scoredCard(p1Data[i].num,p1Data[i].cat,p1Data[i].text,p1Data[i].score,p1Data[i].answer,'#2e5cb8');
   }
@@ -642,8 +644,10 @@ function downloadPDF(){
   html+='</div></div>';
 
   /* PART 3 */
-  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;">';
+  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Part 3','You as an AI-Driven Leader','Inspired by Geoff Woods\u2019 The AI-Driven Leader \u00b7 Scored separately');
+  html+='</div>';
+  html+='<div style="background:#fff;padding:0 36px 10px;">';
   for(var i=0;i<p3Data.length;i++){
     html+=scoredCard(p3Data[i].num,p3Data[i].cat,p3Data[i].text,p3Data[i].score,p3Data[i].answer,'#e31837');
   }
@@ -655,8 +659,10 @@ function downloadPDF(){
   html+='</div></div>';
 
   /* SUMMARY */
-  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;">';
+  html+='<div style="background:#fff;padding:20px 36px 10px;page-break-before:always;page-break-inside:avoid;">';
   html+=sectionHeader('Summary','Results Overview','');
+  html+='</div>';
+  html+='<div style="background:#fff;padding:0 36px 10px;">';
   html+='<div style="display:flex;gap:14px;margin-bottom:12px;page-break-inside:avoid;">';
   html+='<div style="flex:1;border:2px solid '+p1StageColor+';border-radius:10px;padding:16px;text-align:center;">';
   html+='<div style="font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8896a7;margin-bottom:4px;">AI Maturity</div>';
@@ -708,12 +714,12 @@ function downloadPDF(){
 
   var companySafe=custCompany.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')||'Report';
   html2pdf().set({
-    margin:[6,6,6,6],
+    margin:[10,8,10,8],
     filename:'UBT_AI_Readiness_Report_'+companySafe+'.pdf',
     image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,scrollY:0,width:780},
+    html2canvas:{scale:2,useCORS:true,scrollY:0,width:780,letterRendering:true},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-    pagebreak:{mode:['css']}
+    pagebreak:{mode:['avoid-all','css','legacy']}
   }).from(wrapper).save().then(function(){
     document.body.removeChild(wrapper);
     tracker.style.display='';
